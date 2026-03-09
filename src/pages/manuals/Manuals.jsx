@@ -24,7 +24,7 @@ const delBtn = {
 // Practice Inspection Manual
 // ============================================================
 export function PIManual() {
-  const { content, save, saving } = useContent('pi_manual')
+  const { content, save, saving, lastUpdated } = useContent('pi_manual')
   const { isStaff } = useAuth()
 
   const stepCount = parseInt(content.step_count ?? '7', 10) || 7
@@ -60,6 +60,15 @@ export function PIManual() {
             </div>
           </div>
         </div>
+        {lastUpdated && (
+          <div style={{ background:'rgba(200,149,42,0.05)', borderBottom:'1px solid var(--border)', padding:'7px 0' }}>
+            <div className="container">
+              <span style={{ fontSize:10, color:'var(--text-muted)', letterSpacing:2, fontFamily:'Rajdhani,sans-serif', fontWeight:700 }}>
+                LAST UPDATED — {new Date(lastUpdated).toLocaleDateString('en-PH', { day:'numeric', month:'long', year:'numeric' })}
+              </span>
+            </div>
+          </div>
+        )}
 
         <div className="container">
           <div className="content-section">
@@ -134,7 +143,7 @@ const DEFAULT_HANDBOOK_SECTIONS = [
 ]
 
 export function Handbook() {
-  const { content, save, saving } = useContent('handbook')
+  const { content, save, saving, lastUpdated } = useContent('handbook')
   const { isStaff } = useAuth()
 
   const sections = parseJSON(content.handbook_sections, DEFAULT_HANDBOOK_SECTIONS)
@@ -170,6 +179,15 @@ export function Handbook() {
             </div>
           </div>
         </div>
+        {lastUpdated && (
+          <div style={{ background:'rgba(200,149,42,0.05)', borderBottom:'1px solid var(--border)', padding:'7px 0' }}>
+            <div className="container">
+              <span style={{ fontSize:10, color:'var(--text-muted)', letterSpacing:2, fontFamily:'Rajdhani,sans-serif', fontWeight:700 }}>
+                LAST UPDATED — {new Date(lastUpdated).toLocaleDateString('en-PH', { day:'numeric', month:'long', year:'numeric' })}
+              </span>
+            </div>
+          </div>
+        )}
 
         <div className="container">
 
@@ -280,7 +298,7 @@ const DEFAULT_UNIFORM_SECTIONS = [
 ]
 
 export function Uniforms() {
-  const { content, save, saving } = useContent('uniforms')
+  const { content, save, saving, lastUpdated } = useContent('uniforms')
   const { isStaff } = useAuth()
 
   const sections = parseJSON(content.uniform_sections, DEFAULT_UNIFORM_SECTIONS)
@@ -312,6 +330,15 @@ export function Uniforms() {
             </div>
           </div>
         </div>
+        {lastUpdated && (
+          <div style={{ background:'rgba(200,149,42,0.05)', borderBottom:'1px solid var(--border)', padding:'7px 0' }}>
+            <div className="container">
+              <span style={{ fontSize:10, color:'var(--text-muted)', letterSpacing:2, fontFamily:'Rajdhani,sans-serif', fontWeight:700 }}>
+                LAST UPDATED — {new Date(lastUpdated).toLocaleDateString('en-PH', { day:'numeric', month:'long', year:'numeric' })}
+              </span>
+            </div>
+          </div>
+        )}
 
         <div className="container">
           <div className="content-section">
