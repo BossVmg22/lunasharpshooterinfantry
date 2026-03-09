@@ -16,6 +16,8 @@ export function useContent(section) {
   const [saving,  setSaving]  = useState(null)
 
   useEffect(() => {
+    // Reset content immediately when section changes
+    setContent(cache[section] ?? {})
     // Register listener so all instances of useContent(section) stay in sync
     if (!listeners[section]) listeners[section] = new Set()
     const handler = (data) => setContent(data)
