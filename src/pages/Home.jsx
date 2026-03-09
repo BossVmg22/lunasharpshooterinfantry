@@ -13,6 +13,74 @@ function parseJSON(str, def) {
   try { return JSON.parse(str) } catch { return def }
 }
 
+// ── Auto-synced brigade card — pulls directly from brigade page data ──
+function BrigadeHomeCard({ id }) {
+  const { content } = useContent(`brigade_${id}`)
+  const navigate = useNavigate()
+
+  const title       = content.title       || ''
+  const role        = content.role        || ''
+  const description = content.description || ''
+  const callsign    = content.callsign    || ''
+
+  return (
+    <Link to={`/brigades/${id}`} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
+      <div
+        className="post-card"
+        style={{ background: 'var(--panel)', padding: '26px 22px', cursor: 'pointer', height: '100%', position: 'relative', overflow: 'hidden' }}
+      >
+        {/* Gold accent line top */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, var(--gold-dim), transparent)' }} />
+
+        {/* Brigade number */}
+        <div style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 52, color: 'var(--gold-dim)', lineHeight: 1, marginBottom: 4, letterSpacing: 2 }}>
+          {id}
+        </div>
+
+        {/* Callsign */}
+        {callsign && (
+          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 3, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 8 }}>
+            {callsign}
+          </div>
+        )}
+
+        {/* Brigade full name */}
+        {title ? (
+          <div style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 18, color: 'var(--bright)', letterSpacing: 2, marginBottom: 8, lineHeight: 1.1 }}>
+            {title}
+          </div>
+        ) : (
+          <div style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 18, color: 'var(--text-muted)', letterSpacing: 2, marginBottom: 8, fontStyle: 'italic' }}>
+            [ No name set ]
+          </div>
+        )}
+
+        {/* Role */}
+        {role && (
+          <div style={{ fontSize: 10, color: 'var(--text-dim)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 10 }}>
+            {role}
+          </div>
+        )}
+
+        {/* Description */}
+        {description ? (
+          <p style={{ fontFamily: 'Source Serif 4,serif', fontSize: 13, fontWeight: 300, color: 'var(--text-dim)', lineHeight: 1.7, marginBottom: 0 }}>
+            {description.length > 120 ? description.slice(0, 120) + '…' : description}
+          </p>
+        ) : (
+          <p style={{ fontFamily: 'Source Serif 4,serif', fontSize: 13, color: 'var(--text-muted)', fontStyle: 'italic' }}>
+            No description yet.
+          </p>
+        )}
+
+        <div style={{ marginTop: 16, fontSize: 10, fontWeight: 700, letterSpacing: 2, color: 'var(--gold-dim)', textTransform: 'uppercase' }}>
+          View Brigade →
+        </div>
+      </div>
+    </Link>
+  )
+}
+
 export default function Home() {
   const { content, save, saving } = useContent('home')
   const { content: brigadesContent } = useContent('brigades')
@@ -38,6 +106,8 @@ export default function Home() {
   }, [])
 
   const r = i => el => { revealRef.current[i] = el }
+
+  const brigadeIds = parseJSON(brigadesContent.brigade_ids, ['101','102','104'])
 
   return (
     <>
@@ -128,7 +198,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── BRIGADES OVERVIEW ─────────── */}
+      {/* ── BRIGADES OVERVIEW — auto-synced from brigade pages ── */}
       <section style={{ borderBottom: '1px solid var(--border)' }}>
         <div className="container" style={{ padding: '56px 40px' }}>
           <div className="section-label reveal" ref={r(2)}>
@@ -136,28 +206,20 @@ export default function Home() {
             <EditableText value={content.brigades_heading ?? 'Our Brigades'} onSave={v => save('brigades_heading', v)} saving={saving === 'brigades_heading'} tag="span" multiline={false} className="section-label-title" />
             <div className="section-label-rule"/>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(parseJSON(brigadesContent.brigade_ids, ['101','102','104']).length, 3)},1fr)`, gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal" ref={r(3)}>
-            {parseJSON(brigadesContent.brigade_ids, ['101','102','104']).map((id, i) => {
-              const nk = `b${i+1}_num`, namek = `b${i+1}_name`, titlek = `b${i+1}_title`, desck = `b${i+1}_desc`
-              return (
-                <Link to={`/brigades/${id}`} key={id} style={{ textDecoration: 'none' }}>
-                  <div style={{ background: 'var(--panel)', padding: '26px 22px', cursor: 'pointer', height: '100%', transition: 'background 0.2s', position: 'relative', overflow: 'hidden' }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'var(--panel2)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'var(--panel)'}>
-                    <EditableText value={content[nk] ?? id} onSave={v => save(nk, v)} saving={saving === nk} tag="div" multiline={false} style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 44, color: 'var(--gold-dim)', lineHeight: 1, marginBottom: 6 }} />
-                    <EditableText value={content[namek] ?? ''} onSave={v => save(namek, v)} saving={saving === namek} tag="div" multiline={false} style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 10 }} />
-                    <EditableText value={content[titlek] ?? ''} onSave={v => save(titlek, v)} saving={saving === titlek} tag="div" multiline={false} style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 18, color: 'var(--bright)', letterSpacing: 2, marginBottom: 10 }} />
-                    <EditableText value={content[desck] ?? ''} onSave={v => save(desck, v)} saving={saving === desck} tag="div" style={{ fontFamily: 'Source Serif 4,serif', fontSize: 13, fontWeight: 300, color: 'var(--text-dim)', lineHeight: 1.7 }} />
-                    <div style={{ marginTop: 14, fontSize: 10, fontWeight: 700, letterSpacing: 2, color: 'var(--gold-dim)', textTransform: 'uppercase' }}>View Brigade →</div>
-                  </div>
-                </Link>
-              )
-            })}
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(brigadeIds.length, 3)},1fr)`, gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal" ref={r(3)}>
+            {brigadeIds.map(id => (
+              <BrigadeHomeCard key={id} id={id} />
+            ))}
+          </div>
+          <div style={{ marginTop: 12, textAlign: 'right' }}>
+            <span onClick={() => navigate('/brigades')} style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold-dim)', cursor: 'pointer', textTransform: 'uppercase' }}>
+              All Brigades →
+            </span>
           </div>
         </div>
       </section>
 
-{/* ── NOTICES ───────────────────── */}
+      {/* ── NOTICES ───────────────────── */}
       <section style={{ borderBottom: '1px solid var(--border)' }}>
         <div className="container" style={{ padding: '56px 40px' }}>
           <div className="section-label reveal" ref={r(4)}>
@@ -215,7 +277,7 @@ export default function Home() {
           )}
         </div>
       </section>
-      
+
       {/* ── LATEST OPERATIONS ─────────── */}
       {latestPosts.length > 0 && (
         <section style={{ borderBottom: '1px solid var(--border)' }}>
@@ -228,9 +290,8 @@ export default function Home() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
               {latestPosts.map(post => (
                 <div key={post.id} onClick={() => navigate(`/operations/${post.slug}`)}
-                  style={{ background: 'var(--panel)', padding: '22px 22px 18px', cursor: 'pointer', transition: 'background 0.2s' }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'var(--panel2)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'var(--panel)'}>
+                  className="post-card"
+                  style={{ background: 'var(--panel)', padding: '22px 22px 18px', cursor: 'pointer' }}>
                   <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 3, color: CAT_COLORS[post.category] ?? 'var(--gold)', textTransform: 'uppercase', marginBottom: 8 }}>{post.category}</div>
                   <div style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 20, color: 'var(--bright)', letterSpacing: 2, lineHeight: 1.1, marginBottom: 8 }}>{post.title}</div>
                   <p style={{ fontFamily: 'Source Serif 4,serif', fontSize: 12.5, fontWeight: 300, color: 'var(--text-dim)', lineHeight: 1.65 }}>{post.excerpt}</p>
