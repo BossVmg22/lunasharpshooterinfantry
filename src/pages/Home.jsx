@@ -137,27 +137,22 @@ export default function Home() {
             <div className="section-label-rule"/>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(parseJSON(brigadesContent.brigade_ids, ['101','102','104']).length, 3)},1fr)`, gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal" ref={r(3)}>
-            {parseJSON(brigadesContent.brigade_ids, ['101','102','104']).map(id => (
-              <Link to={`/brigades/${id}`} key={id} style={{ textDecoration: 'none' }}>
-                <div style={{ background: 'var(--panel)', padding: '26px 22px', cursor: 'pointer', height: '100%', transition: 'background 0.2s', position: 'relative', overflow: 'hidden' }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'var(--panel2)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'var(--panel)'}>
-                  <div style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 44, color: 'var(--gold-dim)', lineHeight: 1, marginBottom: 6 }}>
-                    {brigadesContent[`brigade_${id}_num`] ?? id}
+            {parseJSON(brigadesContent.brigade_ids, ['101','102','104']).map((id, i) => {
+              const nk = `b${i+1}_num`, namek = `b${i+1}_name`, titlek = `b${i+1}_title`, desck = `b${i+1}_desc`
+              return (
+                <Link to={`/brigades/${id}`} key={id} style={{ textDecoration: 'none' }}>
+                  <div style={{ background: 'var(--panel)', padding: '26px 22px', cursor: 'pointer', height: '100%', transition: 'background 0.2s', position: 'relative', overflow: 'hidden' }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--panel2)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'var(--panel)'}>
+                    <EditableText value={content[nk] ?? id} onSave={v => save(nk, v)} saving={saving === nk} tag="div" multiline={false} style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 44, color: 'var(--gold-dim)', lineHeight: 1, marginBottom: 6 }} />
+                    <EditableText value={content[namek] ?? ''} onSave={v => save(namek, v)} saving={saving === namek} tag="div" multiline={false} style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 10 }} />
+                    <EditableText value={content[titlek] ?? ''} onSave={v => save(titlek, v)} saving={saving === titlek} tag="div" multiline={false} style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 18, color: 'var(--bright)', letterSpacing: 2, marginBottom: 10 }} />
+                    <EditableText value={content[desck] ?? ''} onSave={v => save(desck, v)} saving={saving === desck} tag="div" style={{ fontFamily: 'Source Serif 4,serif', fontSize: 13, fontWeight: 300, color: 'var(--text-dim)', lineHeight: 1.7 }} />
+                    <div style={{ marginTop: 14, fontSize: 10, fontWeight: 700, letterSpacing: 2, color: 'var(--gold-dim)', textTransform: 'uppercase' }}>View Brigade →</div>
                   </div>
-                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 10 }}>
-                    {brigadesContent[`brigade_${id}_callsign`] ?? ''}
-                  </div>
-                  <div style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 18, color: 'var(--bright)', letterSpacing: 2, marginBottom: 10 }}>
-                    {brigadesContent[`brigade_${id}_role`] ?? ''}
-                  </div>
-                  <div style={{ fontFamily: 'Source Serif 4,serif', fontSize: 13, fontWeight: 300, color: 'var(--text-dim)', lineHeight: 1.7 }}>
-                    {brigadesContent[`brigade_${id}_desc`] ?? ''}
-                  </div>
-                  <div style={{ marginTop: 14, fontSize: 10, fontWeight: 700, letterSpacing: 2, color: 'var(--gold-dim)', textTransform: 'uppercase' }}>View Brigade →</div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )
+            })}
           </div>
         </div>
       </section>
