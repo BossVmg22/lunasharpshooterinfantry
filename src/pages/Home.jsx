@@ -8,8 +8,14 @@ import { useAuth } from '../contexts/AuthContext'
 
 const CAT_COLORS = { mission: 'var(--gold)', announcement: '#c06060', news: '#6ab46a' }
 
+function parseJSON(str, def) {
+  if (!str) return def
+  try { return JSON.parse(str) } catch { return def }
+}
+
 export default function Home() {
   const { content, save, saving } = useContent('home')
+  const { content: brigadesContent } = useContent('brigades')
   const { isMember } = useAuth()
   const navigate = useNavigate()
   const revealRef = useRef([])
@@ -130,20 +136,24 @@ export default function Home() {
             <EditableText value={content.brigades_heading ?? 'Our Brigades'} onSave={v => save('brigades_heading', v)} saving={saving === 'brigades_heading'} tag="span" multiline={false} className="section-label-title" />
             <div className="section-label-rule"/>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal" ref={r(3)}>
-            {[
-              ['b1_num','b1_name','b1_title','b1_desc','101','"Three Red Arrows"','Mechanized Brigade','Transport and logistics support. Ensures swift troop deployment with armored vehicles.','/brigades/101'],
-              ['b2_num','b2_name','b2_title','b2_desc','102','"Igsoon"','Reconnaissance Brigade','Covert intelligence gathering behind enemy lines. Real-time situational awareness.','/brigades/102'],
-              ['b3_num','b3_name','b3_title','b3_desc','104','"Sultan"','Primary Infantry','Primary combat unit. Rapid deployment, high versatility, first to respond.','/brigades/104'],
-            ].map(([nk, namek, titlek, desck, nd, named, titled, descd, to]) => (
-              <Link to={to} key={nk} style={{ textDecoration: 'none' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(parseJSON(brigadesContent.brigade_ids, ['101','102','104']).length, 3)},1fr)`, gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal" ref={r(3)}>
+            {parseJSON(brigadesContent.brigade_ids, ['101','102','104']).map(id => (
+              <Link to={`/brigades/${id}`} key={id} style={{ textDecoration: 'none' }}>
                 <div style={{ background: 'var(--panel)', padding: '26px 22px', cursor: 'pointer', height: '100%', transition: 'background 0.2s', position: 'relative', overflow: 'hidden' }}
                   onMouseEnter={e => e.currentTarget.style.background = 'var(--panel2)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'var(--panel)'}>
-                  <EditableText value={content[nk] ?? nd} onSave={v => save(nk, v)} saving={saving === nk} tag="div" multiline={false} style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 44, color: 'var(--gold-dim)', lineHeight: 1, marginBottom: 6 }} />
-                  <EditableText value={content[namek] ?? named} onSave={v => save(namek, v)} saving={saving === namek} tag="div" multiline={false} style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 10 }} />
-                  <EditableText value={content[titlek] ?? titled} onSave={v => save(titlek, v)} saving={saving === titlek} tag="div" multiline={false} style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 18, color: 'var(--bright)', letterSpacing: 2, marginBottom: 10 }} />
-                  <EditableText value={content[desck] ?? descd} onSave={v => save(desck, v)} saving={saving === desck} tag="div" style={{ fontFamily: 'Source Serif 4,serif', fontSize: 13, fontWeight: 300, color: 'var(--text-dim)', lineHeight: 1.7 }} />
+                  <div style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 44, color: 'var(--gold-dim)', lineHeight: 1, marginBottom: 6 }}>
+                    {brigadesContent[`brigade_${id}_num`] ?? id}
+                  </div>
+                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 10 }}>
+                    {brigadesContent[`brigade_${id}_callsign`] ?? ''}
+                  </div>
+                  <div style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 18, color: 'var(--bright)', letterSpacing: 2, marginBottom: 10 }}>
+                    {brigadesContent[`brigade_${id}_role`] ?? ''}
+                  </div>
+                  <div style={{ fontFamily: 'Source Serif 4,serif', fontSize: 13, fontWeight: 300, color: 'var(--text-dim)', lineHeight: 1.7 }}>
+                    {brigadesContent[`brigade_${id}_desc`] ?? ''}
+                  </div>
                   <div style={{ marginTop: 14, fontSize: 10, fontWeight: 700, letterSpacing: 2, color: 'var(--gold-dim)', textTransform: 'uppercase' }}>View Brigade →</div>
                 </div>
               </Link>
