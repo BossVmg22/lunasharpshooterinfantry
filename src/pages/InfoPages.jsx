@@ -363,36 +363,15 @@ export function Academy() {
                 ['Academy Sergeant Major',   'sgm'],
                 ['Head — Academy Dept (AO)', 'head_ao'],
                 ['Head — Recruitment (RO)',  'head_ro'],
-<<<<<<< HEAD
-              ].map(([rank, key]) => {
-                const rankIcon = getRankIcon(rank)
-                return (
-                <div className="coc-row" key={key}>
-                  <div className="coc-num">—</div>
-                  <div className="coc-rank" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    {rankIcon && (
-                      <span style={{ fontFamily:'monospace', fontSize:11, color: rankIcon.color, letterSpacing:1, minWidth:40, opacity:0.9 }}>
-                        {rankIcon.icon}
-                      </span>
-                    )}
-                    {rank}
-                  </div>
-=======
               ].map(([rank, key]) => (
                 <div className="coc-row" key={key}>
                   <div className="coc-num">—</div>
                   <div className="coc-rank">{rank}</div>
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
                   <div className="coc-name">
                     <EditableText value={content[`personnel_${key}`] ?? '[ Vacant ]'} onSave={v => save(`personnel_${key}`,v)} saving={saving===`personnel_${key}`} tag="span" multiline={false} placeholder="[ Vacant ]" />
                   </div>
                 </div>
-<<<<<<< HEAD
-                )
-              })}
-=======
               ))}
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
             </div>
           </div>
 
@@ -412,47 +391,6 @@ export function Academy() {
 }
 
 // ============================================================
-<<<<<<< HEAD
-// Rank icon mapping — small military insignia indicators
-// ============================================================
-const RANK_ICONS = {
-  // High command
-  'commander in chief':               { icon: '✦✦✦✦', color: '#e8c060' },
-  'secretary':                        { icon: '✦✦✦',  color: '#c8952a' },
-  'commanding general':               { icon: '★★★★', color: '#e8c060' },
-  'deputy commanding general':        { icon: '★★★',  color: '#c8952a' },
-  'chief of staff':                   { icon: '★★',   color: '#c8952a' },
-  'sergeant major, philippine army':  { icon: '⬡⬡⬡',  color: '#8a9a70' },
-  // Division
-  'commanding officer':               { icon: '◈◈◈',  color: '#c8952a' },
-  'executive officer':                { icon: '◈◈',   color: '#a07828' },
-  'division sergeant major':          { icon: '⬡⬡',   color: '#8a9a70' },
-  'brigade co':                       { icon: '◆◆',   color: '#c8952a' },
-  'brigade xo':                       { icon: '◆',    color: '#a07828' },
-  'brigade sergeant major':           { icon: '⬡',    color: '#8a9a70' },
-  'company commanding officer':       { icon: '▲▲',   color: '#b08838' },
-  'company executive officer':        { icon: '▲',    color: '#907030' },
-  'instructor':                       { icon: '▸▸',   color: '#6a8060' },
-  'personnel':                        { icon: '▸',    color: '#506050' },
-  // Academy
-  'academy director':                 { icon: '◈◈◈',  color: '#c8952a' },
-  'deputy academy director':          { icon: '◈◈',   color: '#a07828' },
-  'academy sergeant major':           { icon: '⬡⬡',   color: '#8a9a70' },
-  'head':                             { icon: '▲',    color: '#b08838' },
-}
-
-function getRankIcon(rankStr) {
-  if (!rankStr) return null
-  const lower = rankStr.toLowerCase()
-  for (const [pattern, data] of Object.entries(RANK_ICONS)) {
-    if (lower.startsWith(pattern) || lower.includes(pattern)) return data
-  }
-  return null
-}
-
-// ============================================================
-=======
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 // Command — dynamic sections (add / rename / delete)
 // ============================================================
 const DEFAULT_PA = [
@@ -517,32 +455,10 @@ function ChainSection({ title, num, chainKey, content, save, saving, isStaff, on
         )}
       </div>
       <div className="coc-list">
-<<<<<<< HEAD
-        {chain.map((item, idx) => {
-          const rankIcon = getRankIcon(item.rank)
-          return (
-          <div key={idx} className="coc-row" style={{ alignItems: 'center' }}>
-            <div className="coc-num">{idx + 1}</div>
-            <div className="coc-rank" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
-              {rankIcon && (
-                <span title={`Rank: ${item.rank}`} style={{
-                  fontFamily: 'monospace',
-                  fontSize: 11,
-                  color: rankIcon.color,
-                  letterSpacing: 1,
-                  minWidth: 40,
-                  display: 'inline-block',
-                  opacity: 0.9,
-                }}>
-                  {rankIcon.icon}
-                </span>
-              )}
-=======
         {chain.map((item, idx) => (
           <div key={idx} className="coc-row" style={{ alignItems: 'center' }}>
             <div className="coc-num">{idx + 1}</div>
             <div className="coc-rank" style={{ flex: 1 }}>
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
               <EditableText value={item.rank} onSave={v => updateItem(idx, 'rank', v)} saving={saving === chainKey} tag="span" multiline={false} placeholder="Position title…" />
             </div>
             <div className="coc-name" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -552,12 +468,7 @@ function ChainSection({ title, num, chainKey, content, save, saving, isStaff, on
               )}
             </div>
           </div>
-<<<<<<< HEAD
-          )
-        })}
-=======
         ))}
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
       </div>
       {isStaff && (
         <button onClick={addItem} style={addRowBtn}>+ Add Row</button>

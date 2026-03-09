@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { useState, useEffect, useRef } from 'react'
-=======
 import { useState, useEffect } from 'react'
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
@@ -32,14 +28,6 @@ export default function Navbar() {
   const navigate  = useNavigate()
   const [open,     setOpen]     = useState(false)
   const [openDrop, setOpenDrop] = useState(null)
-<<<<<<< HEAD
-  const [isDark,   setIsDark]   = useState(() => {
-    // Default to dark; respect saved preference
-    const saved = localStorage.getItem('lsi-theme')
-    return saved ? saved === 'dark' : true
-  })
-=======
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 
   const [unitsItems,   setUnitsItems]   = useState(DEFAULT_UNITS)
   const [manualsItems, setManualsItems] = useState(DEFAULT_MANUALS)
@@ -49,35 +37,6 @@ export default function Navbar() {
   const [addingGroup, setAddingGroup] = useState(null)
   const [addDraft,    setAddDraft]    = useState({ label: '', to: '' })
 
-<<<<<<< HEAD
-  const closeTimer = useRef(null)
-
-  const openDropdown  = (label) => {
-    if (closeTimer.current) clearTimeout(closeTimer.current)
-    setOpenDrop(label)
-  }
-  const closeDropdown = () => {
-    closeTimer.current = setTimeout(() => {
-      setOpenDrop(null)
-      setAddingGroup(null)
-    }, 120)
-  }
-
-  // Apply theme class to <html> element
-  useEffect(() => {
-    const html = document.documentElement
-    if (isDark) {
-      html.classList.remove('light-mode')
-    } else {
-      html.classList.add('light-mode')
-    }
-    localStorage.setItem('lsi-theme', isDark ? 'dark' : 'light')
-  }, [isDark])
-
-  const toggleTheme = () => setIsDark(d => !d)
-
-=======
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
   // Fix: inject responsive styles inside component lifecycle, not at module level
   useEffect(() => {
     const id = 'lsi-nav-responsive'
@@ -185,24 +144,15 @@ export default function Navbar() {
               return (
                 <div key={link.label}
                   style={{ position: 'relative' }}
-<<<<<<< HEAD
-                  onMouseEnter={() => openDropdown(link.label)}
-                  onMouseLeave={closeDropdown}
-=======
                   onMouseEnter={() => setOpenDrop(link.label)}
                   onMouseLeave={() => { setOpenDrop(null); setAddingGroup(null) }}
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
                 >
                   <Link to={link.to} style={{ ...styles.link, ...(active ? styles.linkActive : {}) }}>
                     {link.label} <span style={{ fontSize: 8, color: 'var(--text-muted)', marginLeft: 2 }}>▾</span>
                     {link.memberOnly && <span style={styles.lockIcon}>🔒</span>}
                   </Link>
                   {isDropOpen && (
-<<<<<<< HEAD
-                    <div style={styles.dropdown} onMouseEnter={() => openDropdown(link.label)} onMouseLeave={closeDropdown}>
-=======
                     <div style={styles.dropdown}>
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
                       {link.children.map((c, idx) => (
                         editingItem && editingItem.group === link.label && editingItem.idx === idx ? (
                           <div key={idx} style={{ padding: '8px 12px', background: 'var(--bg)', borderBottom: '1px solid var(--border)' }}>
@@ -264,29 +214,6 @@ export default function Navbar() {
         </div>
 
         <div style={styles.right}>
-<<<<<<< HEAD
-          {/* Theme toggle */}
-          <button
-            onClick={toggleTheme}
-            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            style={{
-              background: 'transparent',
-              border: '1px solid var(--border2)',
-              color: 'var(--text-dim)',
-              width: 30, height: 30,
-              cursor: 'pointer',
-              fontSize: 14,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              transition: 'all 0.2s',
-              flexShrink: 0,
-            }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--gold)'; e.currentTarget.style.color = 'var(--gold)' }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border2)'; e.currentTarget.style.color = 'var(--text-dim)' }}
-          >
-            {isDark ? '☀' : '🌙'}
-          </button>
-=======
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
           {user ? (
             <>
               {isAdmin && (

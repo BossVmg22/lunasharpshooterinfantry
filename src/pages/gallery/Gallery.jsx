@@ -1,27 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
-<<<<<<< HEAD
-import { uploadToCloudinary, optimizeCloudinaryUrl } from '../../lib/cloudinary'
-=======
 import { uploadToCloudinary } from '../../lib/cloudinary'
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 import { useAuth } from '../../contexts/AuthContext'
 import Footer from '../../components/Footer'
 import { useContent } from '../../lib/useContent'
 import EditableText from '../../components/EditableText'
-<<<<<<< HEAD
-import { SkeletonGalleryItem } from '../../components/Skeleton'
-
-const DEFAULT_CATEGORIES = ['all','operations','inspection','ceremony','academy','general']
-
-export default function Gallery() {
-  const { isStaff, isMember } = useAuth()
-  const { content, save, saving, lastUpdated } = useContent('gallery_page')
-  const [items,      setItems]      = useState([])
-  const [loading,    setLoading]    = useState(true)
-  const [filter,     setFilter]     = useState('all')
-  const [lightbox,   setLightbox]   = useState(null)
-=======
 
 const CATEGORIES = ['all','operations','inspection','ceremony','academy','general']
 
@@ -32,42 +15,12 @@ export default function Gallery() {
   const [loading,    setLoading]    = useState(true)
   const [filter,     setFilter]     = useState('all')
   const [lightbox,   setLightbox]   = useState(null)   // item
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
   const [uploading,  setUploading]  = useState(false)
   const [showForm,   setShowForm]   = useState(false)
   const [form,       setForm]       = useState({ title:'', caption:'', image_url:'', category:'general' })
   const [formError,  setFormError]  = useState('')
-<<<<<<< HEAD
-  const [showCatMgr, setShowCatMgr] = useState(false)
-  const [newCat,     setNewCat]     = useState('')
   const fileRef = useRef()
 
-  // Dynamic categories — stored in Supabase so admins can add custom ones
-  const CATEGORIES = (() => {
-    if (!content.categories) return DEFAULT_CATEGORIES
-    try { return JSON.parse(content.categories) } catch { return DEFAULT_CATEGORIES }
-  })()
-
-  const saveCategories = (cats) => save('categories', JSON.stringify(cats))
-
-  const addCategory = () => {
-    const val = newCat.trim().toLowerCase().replace(/\s+/g, '-')
-    if (!val || CATEGORIES.includes(val)) return
-    const existing = CATEGORIES.filter(c => c !== 'all')
-    if (!existing.includes(val)) saveCategories(['all', ...existing, val])
-    setNewCat('')
-  }
-
-  const removeCategory = (cat) => {
-    if (cat === 'all' || cat === 'general') return
-    saveCategories(CATEGORIES.filter(c => c !== cat))
-    if (filter === cat) setFilter('all')
-  }
-
-=======
-  const fileRef = useRef()
-
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
   const load = async () => {
     setLoading(true)
     const { data } = await supabase.from('gallery').select('*').order('created_at', { ascending: false })
@@ -79,10 +32,7 @@ export default function Gallery() {
 
   const filtered = filter === 'all' ? items : items.filter(i => i.category === filter)
 
-<<<<<<< HEAD
-=======
   // Upload image to Supabase Storage
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
   const handleFileChange = async e => {
     const file = e.target.files[0]
     if (!file) return
@@ -126,18 +76,7 @@ export default function Gallery() {
                 <EditableText value={content.title ?? 'Gallery'} onSave={v => save('title',v)} saving={saving==='title'} tag="div" multiline={false} className="page-hero-title" placeholder="Page title…" />
                 <EditableText value={content.subtitle ?? 'Official photographs from LSI operations, inspections, ceremonies, and Academy events.'} onSave={v => save('subtitle',v)} saving={saving==='subtitle'} tag="div" multiline={false} className="page-hero-sub" placeholder="Page subtitle…" />
               </div>
-<<<<<<< HEAD
-              <div className="page-hero-meta">
-                <strong>{items.length}</strong>Photos
-                {lastUpdated && (
-                  <div style={{ fontSize:9, color:'var(--text-muted)', letterSpacing:1, marginTop:6 }}>
-                    Updated {new Date(lastUpdated).toLocaleDateString('en-PH',{ day:'numeric', month:'short', year:'numeric' })}
-                  </div>
-                )}
-              </div>
-=======
               <div className="page-hero-meta"><strong>{items.length}</strong>Photos</div>
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
             </div>
           </div>
         </div>
@@ -145,11 +84,7 @@ export default function Gallery() {
         <div className="container" style={{ padding:'40px 40px' }}>
 
           {/* Filter + Upload bar */}
-<<<<<<< HEAD
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12, marginBottom:16 }}>
-=======
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12, marginBottom:28 }}>
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
             <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
               {CATEGORIES.map(c => (
                 <button key={c} onClick={() => setFilter(c)}
@@ -157,68 +92,14 @@ export default function Gallery() {
                     padding:'5px 14px', fontSize:10, fontWeight:700, letterSpacing:2,
                     textTransform:'uppercase', cursor:'pointer', border:'1px solid',
                     fontFamily:'Rajdhani,sans-serif',
-<<<<<<< HEAD
-                    background: filter===c ? 'var(--gold)' : 'transparent',
-                    color:      filter===c ? '#090d09'    : 'var(--text-dim)',
-                    borderColor:filter===c ? 'var(--gold)' : 'var(--border2)',
-=======
                     background: filter === c ? 'var(--gold)' : 'transparent',
                     color:      filter === c ? '#090d09'    : 'var(--text-dim)',
                     borderColor:filter === c ? 'var(--gold)' : 'var(--border2)',
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
                   }}>
                   {c}
                 </button>
               ))}
             </div>
-<<<<<<< HEAD
-            <div style={{ display:'flex', gap:8 }}>
-              {isStaff && (
-                <button onClick={() => setShowCatMgr(s => !s)}
-                  style={{ padding:'8px 14px', background: showCatMgr ? 'rgba(200,149,42,0.2)' : 'transparent', color:'var(--gold)', border:'1px solid var(--gold-dim)', fontSize:11, fontWeight:700, letterSpacing:1, cursor:'pointer', textTransform:'uppercase' }}>
-                  ⚙ Categories
-                </button>
-              )}
-              {isMember && (
-                <button onClick={() => setShowForm(s => !s)}
-                  style={{ padding:'8px 20px', background:'var(--gold)', color:'#090d09', border:'none', fontSize:11, fontWeight:700, letterSpacing:2, cursor:'pointer', textTransform:'uppercase' }}>
-                  {showForm ? '✕ Cancel' : '+ Add Photo'}
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Category manager (staff only) */}
-          {isStaff && showCatMgr && (
-            <div style={{ background:'var(--panel)', border:'1px solid var(--border)', borderTop:'2px solid var(--gold-dim)', padding:20, marginBottom:20 }}>
-              <div style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:14, letterSpacing:3, color:'var(--gold)', marginBottom:14 }}>MANAGE CATEGORIES</div>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:16 }}>
-                {CATEGORIES.filter(c => c !== 'all').map(cat => (
-                  <span key={cat} style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'4px 10px', background:'var(--bg)', border:'1px solid var(--border2)', fontSize:10, fontWeight:700, letterSpacing:2, color:'var(--text-dim)', textTransform:'uppercase' }}>
-                    {cat}
-                    {cat !== 'general' && (
-                      <button onClick={() => removeCategory(cat)}
-                        style={{ background:'none', border:'none', color:'#c06060', cursor:'pointer', fontSize:11, padding:0, lineHeight:1 }}>✕</button>
-                    )}
-                  </span>
-                ))}
-              </div>
-              <div style={{ display:'flex', gap:8, alignItems:'center' }}>
-                <input type="text" placeholder="new-category" value={newCat}
-                  onChange={e => setNewCat(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && addCategory()}
-                  style={{ ...inputStyle, width:180 }} />
-                <button onClick={addCategory}
-                  style={{ padding:'8px 16px', background:'rgba(200,149,42,0.15)', border:'1px solid var(--gold-dim)', color:'var(--gold)', fontSize:10, fontWeight:700, letterSpacing:1, cursor:'pointer', fontFamily:'Rajdhani,sans-serif' }}>
-                  + Add
-                </button>
-                <span style={{ fontSize:10, color:'var(--text-muted)' }}>Lowercase, no spaces (use hyphens)</span>
-              </div>
-            </div>
-          )}
-
-          {/* Upload form — fixed JSX structure */}
-=======
             {isMember && (
               <button onClick={() => setShowForm(s => !s)}
                 style={{ padding:'8px 20px', background:'var(--gold)', color:'#090d09', border:'none', fontSize:11, fontWeight:700, letterSpacing:2, cursor:'pointer', textTransform:'uppercase' }}>
@@ -228,16 +109,11 @@ export default function Gallery() {
           </div>
 
           {/* Upload form */}
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
           {isMember && showForm && (
             <form onSubmit={handleAdd} style={{ background:'var(--panel)', border:'1px solid var(--border)', borderTop:'2px solid var(--gold)', padding:24, marginBottom:28 }}>
               <div style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:16, letterSpacing:3, color:'var(--bright)', marginBottom:20 }}>ADD PHOTO</div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
-<<<<<<< HEAD
-                <FormField label="Title"   value={form.title}   onChange={v => setForm(f=>({...f,title:v}))} />
-=======
                 <FormField label="Title" value={form.title}   onChange={v => setForm(f=>({...f,title:v}))} />
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
                 <FormField label="Caption" value={form.caption} onChange={v => setForm(f=>({...f,caption:v}))} />
               </div>
               <div style={{ marginBottom:14 }}>
@@ -259,11 +135,7 @@ export default function Gallery() {
                   style={inputStyle} />
               </div>
               {form.image_url && (
-<<<<<<< HEAD
-                <img src={form.image_url} alt="preview" style={{ height:80, objectFit:'cover', marginBottom:12, border:'1px solid var(--border)', display:'block' }} />
-=======
                 <img src={form.image_url} alt="preview" style={{ height:80, objectFit:'cover', marginBottom:12, border:'1px solid var(--border)' }} />
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
               )}
               {formError && <div style={{ color:'#c06060', fontSize:12, marginBottom:10 }}>{formError}</div>}
               <button type="submit" style={{ padding:'9px 24px', background:'var(--gold)', color:'#090d09', border:'none', fontWeight:700, fontSize:11, letterSpacing:2, cursor:'pointer' }}>
@@ -274,21 +146,6 @@ export default function Gallery() {
 
           {/* Grid */}
           {loading ? (
-<<<<<<< HEAD
-            <div style={{ columns:'3 280px', gap:4 }} className="gallery-masonry">
-              {[1,2,3,4,5,6].map(i => <SkeletonGalleryItem key={i} />)}
-            </div>
-          ) : filtered.length === 0 ? (
-            <div style={{ textAlign:'center', padding:60, color:'var(--text-muted)', fontStyle:'italic', fontSize:13 }}>No photos in this category yet.</div>
-          ) : (
-            <div style={{ columns:'3 280px', gap:4 }} className="gallery-masonry">
-              {filtered.map(item => (
-                <div key={item.id} style={{ breakInside:'avoid', marginBottom:4, position:'relative', cursor:'pointer', overflow:'hidden', display:'block' }}
-                  onClick={() => setLightbox(item)}>
-                  <img
-                    src={optimizeCloudinaryUrl(item.image_url, { width:600 })}
-                    alt={item.title}
-=======
             <div style={{ textAlign:'center', padding:60, color:'var(--gold)', fontFamily:'Bebas Neue,sans-serif', fontSize:22, letterSpacing:3 }}>LOADING…</div>
           ) : filtered.length === 0 ? (
             <div style={{ textAlign:'center', padding:60, color:'var(--text-muted)', fontStyle:'italic', fontSize:13 }}>No photos in this category yet.</div>
@@ -298,16 +155,11 @@ export default function Gallery() {
                 <div key={item.id} style={{ breakInside:'avoid', marginBottom:4, position:'relative', cursor:'pointer', overflow:'hidden', display:'block' }}
                   onClick={() => setLightbox(item)}>
                   <img src={item.image_url} alt={item.title}
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
                     style={{ width:'100%', display:'block', transition:'transform 0.3s' }}
                     onMouseEnter={e => e.currentTarget.style.transform='scale(1.03)'}
                     onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}
                   />
-<<<<<<< HEAD
-                  {/* Hover overlay */}
-=======
                   {/* Overlay */}
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
                   <div style={{
                     position:'absolute', inset:0,
                     background:'linear-gradient(0deg,rgba(9,13,9,0.85) 0%,transparent 50%)',
@@ -316,11 +168,7 @@ export default function Gallery() {
                   }}
                   onMouseEnter={e => e.currentTarget.style.opacity=1}
                   onMouseLeave={e => e.currentTarget.style.opacity=0}>
-<<<<<<< HEAD
-                    {item.title   && <div style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:15, color:'var(--bright)', letterSpacing:2 }}>{item.title}</div>}
-=======
                     {item.title && <div style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:15, color:'var(--bright)', letterSpacing:2 }}>{item.title}</div>}
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
                     {item.caption && <div style={{ fontSize:11, color:'var(--text)', marginTop:2 }}>{item.caption}</div>}
                   </div>
                   {/* Staff delete */}
@@ -341,44 +189,10 @@ export default function Gallery() {
         </div>
       </div>
 
-<<<<<<< HEAD
-      {/* Lightbox — with keyboard support */}
-      {lightbox && (
-        <div
-          onClick={() => setLightbox(null)}
-          onKeyDown={e => {
-            if (e.key === 'Escape') setLightbox(null)
-            if (e.key === 'ArrowRight') {
-              const idx = filtered.findIndex(i => i.id === lightbox.id)
-              if (idx < filtered.length - 1) setLightbox(filtered[idx + 1])
-            }
-            if (e.key === 'ArrowLeft') {
-              const idx = filtered.findIndex(i => i.id === lightbox.id)
-              if (idx > 0) setLightbox(filtered[idx - 1])
-            }
-          }}
-          tabIndex={0}
-          autoFocus
-          style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.92)', zIndex:5000, display:'flex', alignItems:'center', justifyContent:'center', padding:24, outline:'none' }}>
-          {/* Prev / Next arrows */}
-          {filtered.findIndex(i=>i.id===lightbox.id) > 0 && (
-            <button onClick={e => { e.stopPropagation(); const idx=filtered.findIndex(i=>i.id===lightbox.id); setLightbox(filtered[idx-1]) }}
-              style={{ position:'fixed', left:20, top:'50%', transform:'translateY(-50%)', background:'rgba(0,0,0,0.6)', border:'1px solid var(--border2)', color:'var(--text)', width:40, height:40, cursor:'pointer', fontSize:18, display:'flex', alignItems:'center', justifyContent:'center', zIndex:1 }}>
-              ‹
-            </button>
-          )}
-          {filtered.findIndex(i=>i.id===lightbox.id) < filtered.length-1 && (
-            <button onClick={e => { e.stopPropagation(); const idx=filtered.findIndex(i=>i.id===lightbox.id); setLightbox(filtered[idx+1]) }}
-              style={{ position:'fixed', right:20, top:'50%', transform:'translateY(-50%)', background:'rgba(0,0,0,0.6)', border:'1px solid var(--border2)', color:'var(--text)', width:40, height:40, cursor:'pointer', fontSize:18, display:'flex', alignItems:'center', justifyContent:'center', zIndex:1 }}>
-              ›
-            </button>
-          )}
-=======
       {/* Lightbox */}
       {lightbox && (
         <div onClick={() => setLightbox(null)}
           style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.92)', zIndex:5000, display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}>
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
           <div onClick={e => e.stopPropagation()}
             style={{ maxWidth:900, width:'100%', background:'var(--panel)', border:'1px solid var(--border)' }}>
             <img src={lightbox.image_url} alt={lightbox.title} style={{ width:'100%', maxHeight:'70vh', objectFit:'contain', display:'block' }} />
@@ -388,22 +202,10 @@ export default function Gallery() {
                 {lightbox.caption && <div style={{ fontSize:13, color:'var(--text-dim)', fontFamily:'Source Serif 4,serif', fontWeight:300, marginTop:4 }}>{lightbox.caption}</div>}
                 <div style={{ fontSize:9, color:'var(--text-muted)', letterSpacing:2, marginTop:6, textTransform:'uppercase' }}>{lightbox.category}</div>
               </div>
-<<<<<<< HEAD
-              <div style={{ display:'flex', gap:8, alignItems:'center', flexShrink:0 }}>
-                <span style={{ fontSize:10, color:'var(--text-muted)' }}>
-                  {filtered.findIndex(i=>i.id===lightbox.id)+1} / {filtered.length}
-                </span>
-                <button onClick={() => setLightbox(null)}
-                  style={{ background:'none', border:'1px solid var(--border2)', color:'var(--text-dim)', padding:'6px 14px', cursor:'pointer', fontSize:11, letterSpacing:1, fontFamily:'Rajdhani,sans-serif', fontWeight:700 }}>
-                  CLOSE
-                </button>
-              </div>
-=======
               <button onClick={() => setLightbox(null)}
                 style={{ background:'none', border:'1px solid var(--border2)', color:'var(--text-dim)', padding:'6px 14px', cursor:'pointer', fontSize:11, letterSpacing:1, fontFamily:'Rajdhani,sans-serif', fontWeight:700 }}>
                 CLOSE
               </button>
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
             </div>
           </div>
         </div>
@@ -415,15 +217,11 @@ export default function Gallery() {
 }
 
 const labelStyle = { display:'block', fontSize:9, fontWeight:700, letterSpacing:3, color:'var(--gold-dim)', textTransform:'uppercase', marginBottom:6 }
-<<<<<<< HEAD
-const inputStyle  = { width:'100%', background:'var(--bg)', color:'var(--bright)', border:'1px solid var(--border2)', padding:'9px 12px', fontSize:13, fontFamily:'Rajdhani,sans-serif', outline:'none' }
-=======
 const inputStyle  = {
   width:'100%', background:'var(--bg)', color:'var(--bright)',
   border:'1px solid var(--border2)', padding:'9px 12px',
   fontSize:13, fontFamily:'Rajdhani,sans-serif', outline:'none',
 }
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 
 function FormField({ label, value, onChange }) {
   return (

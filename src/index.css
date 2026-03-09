@@ -17,39 +17,8 @@
   --border2:   #263226;
   --scan:      rgba(160,210,140,0.018);
   --nav-h:     56px;
-<<<<<<< HEAD
-  --skeleton-base: #1a231a;
-  --skeleton-shine:#1f2e1f;
 }
 
-/* ── Light mode ──────────────────────────────── */
-.light-mode {
-  --bg:        #f4f1e8;
-  --bg2:       #ede9da;
-  --panel:     #e8e4d6;
-  --panel2:    #dedad0;
-  --green:     #d4e0c8;
-  --green-mid: #c4d8b0;
-  --gold:      #8a6210;
-  --gold-dim:  #a07820;
-  --gold-pale: #5a3c00;
-  --text:      #2e2a1e;
-  --text-dim:  #5a5040;
-  --text-muted:#8a8070;
-  --bright:    #1a1610;
-  --red:       #8a2020;
-  --border:    #c8c4b0;
-  --border2:   #b8b4a0;
-  --scan:      rgba(0,0,0,0.012);
-  --skeleton-base: #d8d4c4;
-  --skeleton-shine:#cac6b6;
-}
-.light-mode body::before { opacity: 0.3; }
-
-=======
-}
-
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 *  { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
@@ -228,20 +197,6 @@ textarea, input { font-family: inherit; }
 }
 .btn-ghost:hover { border-color: var(--gold-dim); color: var(--gold); }
 
-<<<<<<< HEAD
-/* ── Skeleton loading ────────────────────────── */
-@keyframes skeleton-shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position:  400px 0; }
-}
-.skeleton {
-  background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 50%, var(--skeleton-base) 75%);
-  background-size: 800px 100%;
-  animation: skeleton-shimmer 1.4s ease-in-out infinite;
-}
-
-=======
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 /* ── Reveal animation ────────────────────────── */
 .reveal { opacity: 0; transform: translateY(12px); transition: opacity 0.4s ease, transform 0.4s ease; }
 .reveal.in { opacity: 1; transform: translateY(0); }
@@ -257,18 +212,6 @@ textarea, input { font-family: inherit; }
 .footer-bottom p { font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px; }
 .footer-sig { font-family: 'Bebas Neue', sans-serif; font-size: 13px; color: var(--gold-dim); letter-spacing: 3px; }
 
-<<<<<<< HEAD
-/* ── Brigade overview grid ───────────────────── */
-.brigade-overview-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-}
-
-/* ── Hero content pad — controlled here, not inline ─ */
-.hero-mobile-pad { padding: 0 48px; }
-
-=======
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 /* ═══════════════════════════════════════════════
    MOBILE
 ═══════════════════════════════════════════════ */
@@ -290,28 +233,4 @@ textarea, input { font-family: inherit; }
   .footer-grid { grid-template-columns: 1fr; gap: 20px; }
   .page-hero-row { flex-direction: column; }
   .page-hero-meta { text-align: left; }
-<<<<<<< HEAD
-
-  /* Hero mobile fixes */
-  .hero-mobile-pad { padding: 0 20px !important; }
-  .hero-buttons-row button { width: 100%; text-align: center; }
-  .hero-stats-row { gap: 20px !important; flex-wrap: wrap !important; }
-
-  /* Brigade cards mobile */
-  .brigade-overview-grid { grid-template-columns: 1fr !important; }
-
-  /* Gallery grid mobile */
-  .gallery-masonry { columns: 2 160px !important; }
-
-  /* Quick links grid mobile */
-  .quick-links-grid { grid-template-columns: repeat(2,1fr) !important; }
-
-  /* Operations grid mobile */
-  .ops-grid { grid-template-columns: 1fr !important; }
-
-  /* Toolbar wrap on mobile */
-  .ops-toolbar { flex-direction: column !important; align-items: flex-start !important; }
-  .ops-filter-row { flex-wrap: wrap !important; }
-=======
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 }

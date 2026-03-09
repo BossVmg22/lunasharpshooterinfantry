@@ -5,10 +5,6 @@ import { supabase } from '../lib/supabase'
 import EditableText from '../components/EditableText'
 import Footer from '../components/Footer'
 import { useAuth } from '../contexts/AuthContext'
-<<<<<<< HEAD
-import { optimizeCloudinaryUrl } from '../lib/cloudinary'
-=======
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 
 const CAT_COLORS = { mission: 'var(--gold)', announcement: '#c06060', news: '#6ab46a' }
 
@@ -25,10 +21,6 @@ export default function Home() {
   const revealRef = useRef([])
   const [latestPosts,   setLatestPosts]   = useState([])
   const [latestGallery, setLatestGallery] = useState([])
-<<<<<<< HEAD
-  const [glowPos,       setGlowPos]       = useState({ x: -9999, y: -9999 })
-=======
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 
   useEffect(() => {
     supabase.from('posts').select('id,title,slug,excerpt,category,created_at').eq('status', 'published').order('created_at', { ascending: false }).limit(3)
@@ -50,31 +42,12 @@ export default function Home() {
   return (
     <>
       {/* ── HERO ───────────────────────── */}
-<<<<<<< HEAD
-      <section style={heroStyle} onMouseMove={e => {
-        const rect = e.currentTarget.getBoundingClientRect()
-        setGlowPos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
-      }} onMouseLeave={() => setGlowPos({ x: -9999, y: -9999 })}>
-        <div style={heroBg}/>
-        <div style={heroGrid}/>
-        {/* Cursor glow overlay */}
-        <div style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: `radial-gradient(circle 220px at ${glowPos.x}px ${glowPos.y}px, rgba(200,149,42,0.10) 0%, transparent 70%)`,
-          transition: 'background 0.05s',
-          zIndex: 0,
-        }}/>
-        {['tl','tr','bl','br'].map(p => <div key={p} style={cornerStyle(p)}/>)}
-
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: 860 }} className="hero-mobile-pad">
-=======
       <section style={heroStyle}>
         <div style={heroBg}/>
         <div style={heroGrid}/>
         {['tl','tr','bl','br'].map(p => <div key={p} style={cornerStyle(p)}/>)}
 
         <div style={{ position: 'relative', zIndex: 1, padding: '0 48px', maxWidth: 860 }}>
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
           <div style={eyebrow}>
             <EditableText value={content.hero_eyebrow ?? 'Official Division Portal'} onSave={v => save('hero_eyebrow', v)} saving={saving === 'hero_eyebrow'} tag="span" multiline={false} />
           </div>
@@ -96,11 +69,7 @@ export default function Home() {
             style={{ fontFamily: 'Source Serif 4,serif', fontSize: 15, fontWeight: 300, color: 'var(--text)', lineHeight: 1.8, maxWidth: 520, marginBottom: 32, fontStyle: 'italic' }}
           />
 
-<<<<<<< HEAD
-          <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 44 }} className="hero-buttons-row">
-=======
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 44 }}>
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
             <button className="btn-primary" onClick={() => navigate('/about')}>
               <EditableText value={content.btn_primary ?? 'Division Overview'} onSave={v => save('btn_primary', v)} saving={saving === 'btn_primary'} tag="span" multiline={false} />
             </button>
@@ -112,11 +81,7 @@ export default function Home() {
             }
           </div>
 
-<<<<<<< HEAD
-          <div style={{ display: 'flex', gap: 40, paddingTop: 28, borderTop: '1px solid var(--border)', flexWrap: 'wrap' }} className="hero-stats-row">
-=======
           <div style={{ display: 'flex', gap: 40, paddingTop: 28, borderTop: '1px solid var(--border)', flexWrap: 'wrap' }}>
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
             {[
               ['hero_stat1_num','hero_stat1_label','3','Active Brigades'],
               ['hero_stat2_num','hero_stat2_label','1','Infantry Academy'],
@@ -141,11 +106,7 @@ export default function Home() {
             </span>
             <div className="section-label-rule"/>
           </div>
-<<<<<<< HEAD
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal quick-links-grid" ref={r(1)}>
-=======
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal" ref={r(1)}>
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
             {[
               ['quick_1_icon','quick_1_label','quick_1_sub','📋','PI Manual','Practice Inspection','/manuals/pi', true],
               ['quick_2_icon','quick_2_label','quick_2_sub','📖','Handbook','Personnel Rules','/manuals/handbook', true],
@@ -175,11 +136,7 @@ export default function Home() {
             <EditableText value={content.brigades_heading ?? 'Our Brigades'} onSave={v => save('brigades_heading', v)} saving={saving === 'brigades_heading'} tag="span" multiline={false} className="section-label-title" />
             <div className="section-label-rule"/>
           </div>
-<<<<<<< HEAD
-          <div style={{ gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal brigade-overview-grid" ref={r(3)}>
-=======
           <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(parseJSON(brigadesContent.brigade_ids, ['101','102','104']).length, 3)},1fr)`, gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal" ref={r(3)}>
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
             {parseJSON(brigadesContent.brigade_ids, ['101','102','104']).map((id, i) => {
               const nk = `b${i+1}_num`, namek = `b${i+1}_name`, titlek = `b${i+1}_title`, desck = `b${i+1}_desc`
               return (
@@ -303,11 +260,7 @@ export default function Home() {
               {latestGallery.map(img => (
                 <div key={img.id} onClick={() => navigate('/gallery')}
                   style={{ aspectRatio: '16/9', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}>
-<<<<<<< HEAD
-                  <img src={optimizeCloudinaryUrl(img.image_url, { width: 600, thumb: false })} alt={img.title}
-=======
                   <img src={img.image_url} alt={img.title}
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
                     style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
                     onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
                     onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}/>
