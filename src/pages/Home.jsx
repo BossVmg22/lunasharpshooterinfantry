@@ -16,7 +16,7 @@ function parseJSON(str, def) {
 export default function Home() {
   const { content, save, saving } = useContent('home')
   const { content: brigadesContent } = useContent('brigades')
-  const { isMember } = useAuth()
+  const { isMember, isStaff } = useAuth()
   const navigate = useNavigate()
   const revealRef = useRef([])
   const [latestPosts,   setLatestPosts]   = useState([])
@@ -157,7 +157,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── NOTICES ───────────────────── */}
+{/* ── NOTICES ───────────────────── */}
       <section style={{ borderBottom: '1px solid var(--border)' }}>
         <div className="container" style={{ padding: '56px 40px' }}>
           <div className="section-label reveal" ref={r(4)}>
@@ -166,20 +166,56 @@ export default function Home() {
             <div className="section-label-rule"/>
           </div>
           <div style={{ border: '1px solid var(--border)' }} className="reveal" ref={r(5)}>
-            {[
-              { dateKey: 'notice_1_date', key: 'notice_1', defaultDate: 'SAT', defaultNotice: 'Weekly Practice Inspection (WPI) — all personnel must attend in correct uniform.' },
-              { dateKey: 'notice_2_date', key: 'notice_2', defaultDate: 'MON–FRI', defaultNotice: 'No major events, phases, or selections before 4:00 PM GMT+8.' },
-              { dateKey: 'notice_3_date', key: 'notice_3', defaultDate: 'SUN', defaultNotice: 'Full rest day — all operations optional by CiC decree.' },
-            ].map(({ dateKey, key, defaultDate, defaultNotice }) => (
-              <div key={key} style={{ display: 'flex', alignItems: 'flex-start', gap: 16, padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
-                <EditableText value={content[dateKey] ?? defaultDate} onSave={v => save(dateKey, v)} saving={saving === dateKey} tag="div" multiline={false} style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 13, color: 'var(--gold-dim)', letterSpacing: 1, minWidth: 70, paddingTop: 2 }} />
-                <EditableText value={content[key] ?? ''} onSave={v => save(key, v)} saving={saving === key} placeholder={defaultNotice} style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.5 }} />
+            {parseJSON(content.notices_list, [
+              { date: 'SAT', text: 'Weekly Practice Inspection (WPI) — all personnel must attend in correct uniform.' },
+              { date: 'MON–FRI', text: 'No major events, phases, or selections before 4:00 PM GMT+8.' },
+              { date: 'SUN', text: 'Full rest day — all operations optional by CiC decree.' },
+            ]).map((notice, idx, arr) => (
+              <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: 16, padding: '16px 20px', borderBottom: '1px solid var(--border)', position: 'relative' }}>
+                <EditableText
+                  value={notice.date}
+                  onSave={v => {
+                    const updated = arr.map((n, i) => i === idx ? { ...n, date: v } : n)
+                    save('notices_list', JSON.stringify(updated))
+                  }}
+                  saving={saving === 'notices_list'}
+                  tag="div" multiline={false}
+                  style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 13, color: 'var(--gold-dim)', letterSpacing: 1, minWidth: 70, paddingTop: 2 }}
+                />
+                <EditableText
+                  value={notice.text}
+                  onSave={v => {
+                    const updated = arr.map((n, i) => i === idx ? { ...n, text: v } : n)
+                    save('notices_list', JSON.stringify(updated))
+                  }}
+                  saving={saving === 'notices_list'}
+                  placeholder="Enter notice text…"
+                  style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.5, flex: 1 }}
+                />
+                {isStaff && (
+                  <button onClick={() => {
+                    const updated = arr.filter((_, i) => i !== idx)
+                    save('notices_list', JSON.stringify(updated))
+                  }} style={{ background: 'none', border: 'none', color: '#c06060', cursor: 'pointer', fontSize: 13, padding: '0 4px', opacity: 0.7 }}>✕</button>
+                )}
               </div>
             ))}
           </div>
+          {isStaff && (
+            <button onClick={() => {
+              const current = parseJSON(content.notices_list, [
+                { date: 'SAT', text: 'Weekly Practice Inspection (WPI) — all personnel must attend in correct uniform.' },
+                { date: 'MON–FRI', text: 'No major events, phases, or selections before 4:00 PM GMT+8.' },
+                { date: 'SUN', text: 'Full rest day — all operations optional by CiC decree.' },
+              ])
+              save('notices_list', JSON.stringify([...current, { date: 'DATE', text: 'Enter notice…' }]))
+            }} style={{ marginTop: 10, padding: '6px 16px', background: 'rgba(200,149,42,0.1)', border: '1px dashed var(--gold-dim)', color: 'var(--gold)', cursor: 'pointer', fontSize: 11, fontWeight: 700, letterSpacing: 1, fontFamily: 'Rajdhani, sans-serif' }}>
+              + Add Notice
+            </button>
+          )}
         </div>
       </section>
-
+      
       {/* ── LATEST OPERATIONS ─────────── */}
       {latestPosts.length > 0 && (
         <section style={{ borderBottom: '1px solid var(--border)' }}>
