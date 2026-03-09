@@ -2,10 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
-<<<<<<< HEAD
 import ScrollToTop from './components/ScrollToTop'
-=======
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 
 import Home    from './pages/Home'
 import Login   from './pages/Login'
@@ -20,10 +17,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-<<<<<<< HEAD
         <ScrollToTop />
-=======
->>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
         <Navbar />
         <Routes>
           <Route path="/"         element={<Home />} />
@@ -53,3 +47,5 @@ export default function App() {
     </AuthProvider>
   )
 }
+
+
