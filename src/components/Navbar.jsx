@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useState, useEffect, useRef } from 'react'
+=======
+import { useState, useEffect } from 'react'
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
@@ -28,11 +32,14 @@ export default function Navbar() {
   const navigate  = useNavigate()
   const [open,     setOpen]     = useState(false)
   const [openDrop, setOpenDrop] = useState(null)
+<<<<<<< HEAD
   const [isDark,   setIsDark]   = useState(() => {
     // Default to dark; respect saved preference
     const saved = localStorage.getItem('lsi-theme')
     return saved ? saved === 'dark' : true
   })
+=======
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 
   const [unitsItems,   setUnitsItems]   = useState(DEFAULT_UNITS)
   const [manualsItems, setManualsItems] = useState(DEFAULT_MANUALS)
@@ -42,6 +49,7 @@ export default function Navbar() {
   const [addingGroup, setAddingGroup] = useState(null)
   const [addDraft,    setAddDraft]    = useState({ label: '', to: '' })
 
+<<<<<<< HEAD
   const closeTimer = useRef(null)
 
   const openDropdown  = (label) => {
@@ -68,6 +76,8 @@ export default function Navbar() {
 
   const toggleTheme = () => setIsDark(d => !d)
 
+=======
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
   // Fix: inject responsive styles inside component lifecycle, not at module level
   useEffect(() => {
     const id = 'lsi-nav-responsive'
@@ -175,15 +185,24 @@ export default function Navbar() {
               return (
                 <div key={link.label}
                   style={{ position: 'relative' }}
+<<<<<<< HEAD
                   onMouseEnter={() => openDropdown(link.label)}
                   onMouseLeave={closeDropdown}
+=======
+                  onMouseEnter={() => setOpenDrop(link.label)}
+                  onMouseLeave={() => { setOpenDrop(null); setAddingGroup(null) }}
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
                 >
                   <Link to={link.to} style={{ ...styles.link, ...(active ? styles.linkActive : {}) }}>
                     {link.label} <span style={{ fontSize: 8, color: 'var(--text-muted)', marginLeft: 2 }}>▾</span>
                     {link.memberOnly && <span style={styles.lockIcon}>🔒</span>}
                   </Link>
                   {isDropOpen && (
+<<<<<<< HEAD
                     <div style={styles.dropdown} onMouseEnter={() => openDropdown(link.label)} onMouseLeave={closeDropdown}>
+=======
+                    <div style={styles.dropdown}>
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
                       {link.children.map((c, idx) => (
                         editingItem && editingItem.group === link.label && editingItem.idx === idx ? (
                           <div key={idx} style={{ padding: '8px 12px', background: 'var(--bg)', borderBottom: '1px solid var(--border)' }}>
@@ -245,6 +264,7 @@ export default function Navbar() {
         </div>
 
         <div style={styles.right}>
+<<<<<<< HEAD
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
@@ -265,6 +285,8 @@ export default function Navbar() {
           >
             {isDark ? '☀' : '🌙'}
           </button>
+=======
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
           {user ? (
             <>
               {isAdmin && (

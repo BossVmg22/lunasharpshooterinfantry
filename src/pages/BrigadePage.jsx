@@ -5,6 +5,7 @@ import EditableText from '../components/EditableText'
 import EditableImage from '../components/EditableImage'
 import Footer from '../components/Footer'
 
+<<<<<<< HEAD
 const RANK_ICONS = {
   'brigade co':    { icon: '◆◆', color: '#c8952a' },
   'brigade xo':    { icon: '◆',  color: '#a07828' },
@@ -26,6 +27,8 @@ function getRankIcon(r) {
   return null
 }
 
+=======
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 const addRowBtn = {
   marginTop: 10, padding: '6px 16px', background: 'rgba(200,149,42,0.1)',
   border: '1px dashed var(--gold-dim)', color: 'var(--gold)', cursor: 'pointer',
@@ -222,6 +225,7 @@ export default function BrigadePage() {
               <div className="section-label-rule"/>
             </div>
             <div className="coc-list">
+<<<<<<< HEAD
               {personnel.map((p, idx) => {
                 const icon = getRankIcon(p.rank)
                 return (
@@ -229,6 +233,12 @@ export default function BrigadePage() {
                   <div className="coc-num">—</div>
                   <div className="coc-rank" style={{ flex: 1, display:'flex', alignItems:'center', gap:8 }}>
                     {icon && <span style={{ fontFamily:'monospace', fontSize:11, color:icon.color, letterSpacing:1, minWidth:36, opacity:0.9 }}>{icon.icon}</span>}
+=======
+              {personnel.map((p, idx) => (
+                <div className="coc-row" key={idx} style={{ alignItems: 'center' }}>
+                  <div className="coc-num">—</div>
+                  <div className="coc-rank" style={{ flex: 1 }}>
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
                     <EditableText value={p.rank} onSave={v => updatePersonnel(idx, 'rank', v)} saving={saving === 'personnel_rows'} tag="span" multiline={false} placeholder="Position title…" />
                   </div>
                   <div className="coc-name" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -238,8 +248,12 @@ export default function BrigadePage() {
                     )}
                   </div>
                 </div>
+<<<<<<< HEAD
                 )
               })}
+=======
+              ))}
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
             </div>
             {isStaff && (
               <button onClick={addPersonnel} style={addRowBtn}>+ Add Personnel</button>

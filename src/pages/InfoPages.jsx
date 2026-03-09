@@ -363,6 +363,7 @@ export function Academy() {
                 ['Academy Sergeant Major',   'sgm'],
                 ['Head — Academy Dept (AO)', 'head_ao'],
                 ['Head — Recruitment (RO)',  'head_ro'],
+<<<<<<< HEAD
               ].map(([rank, key]) => {
                 const rankIcon = getRankIcon(rank)
                 return (
@@ -376,12 +377,22 @@ export function Academy() {
                     )}
                     {rank}
                   </div>
+=======
+              ].map(([rank, key]) => (
+                <div className="coc-row" key={key}>
+                  <div className="coc-num">—</div>
+                  <div className="coc-rank">{rank}</div>
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
                   <div className="coc-name">
                     <EditableText value={content[`personnel_${key}`] ?? '[ Vacant ]'} onSave={v => save(`personnel_${key}`,v)} saving={saving===`personnel_${key}`} tag="span" multiline={false} placeholder="[ Vacant ]" />
                   </div>
                 </div>
+<<<<<<< HEAD
                 )
               })}
+=======
+              ))}
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
             </div>
           </div>
 
@@ -401,6 +412,7 @@ export function Academy() {
 }
 
 // ============================================================
+<<<<<<< HEAD
 // Rank icon mapping — small military insignia indicators
 // ============================================================
 const RANK_ICONS = {
@@ -439,6 +451,8 @@ function getRankIcon(rankStr) {
 }
 
 // ============================================================
+=======
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
 // Command — dynamic sections (add / rename / delete)
 // ============================================================
 const DEFAULT_PA = [
@@ -503,6 +517,7 @@ function ChainSection({ title, num, chainKey, content, save, saving, isStaff, on
         )}
       </div>
       <div className="coc-list">
+<<<<<<< HEAD
         {chain.map((item, idx) => {
           const rankIcon = getRankIcon(item.rank)
           return (
@@ -522,6 +537,12 @@ function ChainSection({ title, num, chainKey, content, save, saving, isStaff, on
                   {rankIcon.icon}
                 </span>
               )}
+=======
+        {chain.map((item, idx) => (
+          <div key={idx} className="coc-row" style={{ alignItems: 'center' }}>
+            <div className="coc-num">{idx + 1}</div>
+            <div className="coc-rank" style={{ flex: 1 }}>
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
               <EditableText value={item.rank} onSave={v => updateItem(idx, 'rank', v)} saving={saving === chainKey} tag="span" multiline={false} placeholder="Position title…" />
             </div>
             <div className="coc-name" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -531,8 +552,12 @@ function ChainSection({ title, num, chainKey, content, save, saving, isStaff, on
               )}
             </div>
           </div>
+<<<<<<< HEAD
           )
         })}
+=======
+        ))}
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
       </div>
       {isStaff && (
         <button onClick={addItem} style={addRowBtn}>+ Add Row</button>

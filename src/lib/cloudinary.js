@@ -32,6 +32,7 @@ export async function uploadToCloudinary(file) {
   const data = await res.json()
   return data.secure_url   // https://res.cloudinary.com/...
 }
+<<<<<<< HEAD
 
 /**
  * Optimize an existing Cloudinary URL by injecting transformation params.
@@ -72,3 +73,5 @@ export function optimizeCloudinaryUrl(url, options = {}) {
   // Insert transformations after /upload/ in the URL
   return url.replace('/upload/', `/upload/${transforms}/`)
 }
+=======
+>>>>>>> 2122e0e3b320849ad366ee701029d8f3748c491b
