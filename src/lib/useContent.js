@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 
-// In-memory cache shared across all hook instances
 const cache = {}
 const listeners = {}
+const timestampCache = {}
 
 function notify(section, data) {
   if (listeners[section]) {
@@ -12,22 +12,22 @@ function notify(section, data) {
 }
 
 export function useContent(section) {
-  const [content, setContent] = useState(cache[section] ?? {})
-  const [saving,  setSaving]  = useState(null)
+  const [content,     setContent]     = useState(cache[section] ?? {})
+  const [saving,      setSaving]      = useState(null)
+  const [lastUpdated, setLastUpdated] = useState(timestampCache[section] ?? null)
 
   useEffect(() => {
-    // Reset content immediately when section changes
     setContent(cache[section] ?? {})
-    // Register listener so all instances of useContent(section) stay in sync
+    setLastUpdated(timestampCache[section] ?? null)
+
     if (!listeners[section]) listeners[section] = new Set()
     const handler = (data) => setContent(data)
     listeners[section].add(handler)
 
-    // Load from DB if not cached
     if (!cache[section]) {
       supabase
         .from('content')
-        .select('key, value')
+        .select('key, value, updated_at')
         .eq('section', section)
         .then(({ data }) => {
           if (!data) return
@@ -35,6 +35,16 @@ export function useContent(section) {
           cache[section] = map
           setContent(map)
           notify(section, map)
+
+          // Track most recent updated_at across all keys in this section
+          const latest = data.reduce((acc, r) => {
+            if (!r.updated_at) return acc
+            return (!acc || r.updated_at > acc) ? r.updated_at : acc
+          }, null)
+          if (latest) {
+            timestampCache[section] = latest
+            setLastUpdated(latest)
+          }
         })
     }
 
@@ -45,8 +55,9 @@ export function useContent(section) {
 
   const save = useCallback(async (key, value) => {
     setSaving(key)
+    const now = new Date().toISOString()
     const { error } = await supabase.from('content').upsert(
-      { section, key, value, updated_at: new Date().toISOString() },
+      { section, key, value, updated_at: now },
       { onConflict: 'section,key' }
     )
     if (!error) {
@@ -54,9 +65,11 @@ export function useContent(section) {
       cache[section] = updated
       setContent(updated)
       notify(section, updated)
+      timestampCache[section] = now
+      setLastUpdated(now)
     }
     setSaving(null)
   }, [section])
 
-  return { content, save, saving }
+  return { content, save, saving, lastUpdated }
 }
