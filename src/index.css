@@ -460,11 +460,19 @@ textarea, input { font-family: inherit; }
 
 /* ── Mobile responsive fixes ─────────────────── */
 @media (max-width: 768px) {
-  .container { padding: 0 16px; }
+  .container { padding: 0 16px !important; }
 
   /* Hard clamp everything to viewport width */
   *, *::before, *::after { max-width: 100vw; }
   section, .page-wrap, main, .container { overflow-x: hidden; width: 100%; }
+
+  /* Fix inline-padded containers inside .container — React renders these as
+     e.g. style="padding: 56px 40px" which overrides the class .container padding.
+     We restore safe horizontal values here. */
+  .container > div[style*="padding"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
 
   .page-hero { padding: 28px 0 20px; }
   .page-hero-row { flex-direction: column; align-items: flex-start; gap: 12px; }
@@ -478,6 +486,12 @@ textarea, input { font-family: inherit; }
 
   .brigade-card { grid-template-columns: 1fr; }
   .brigade-tab { border-right: none; border-bottom: 1px solid var(--border); padding: 20px 16px; }
+
+  /* Home page grids */
+  .home-quick-grid  { grid-template-columns: 1fr 1fr !important; }
+  .home-brigade-grid { grid-template-columns: 1fr !important; }
+  .home-gallery-grid { grid-template-columns: 1fr 1fr !important; }
+  .home-ops-grid    { grid-template-columns: 1fr !important; }
 
   .data-table thead { display: none; }
   .data-table tbody tr { display: flex; flex-direction: column; padding: 12px 0; border: 1px solid var(--border); margin-bottom: 8px; }
@@ -512,6 +526,8 @@ textarea, input { font-family: inherit; }
 @media (max-width: 480px) {
   .three-col { grid-template-columns: 1fr; }
   .page-hero-title { font-size: 32px !important; }
+  .home-quick-grid  { grid-template-columns: 1fr 1fr !important; }
+  .home-gallery-grid { grid-template-columns: 1fr !important; }
 }
 
 /* ── Navbar hamburger hidden by default ──────── */
