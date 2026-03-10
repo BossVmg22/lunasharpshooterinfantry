@@ -217,7 +217,7 @@ export function PostDetail() {
     <div className="page-wrap">
       <div style={{ padding:'44px 0 36px', background:'var(--bg2)', borderBottom:'1px solid var(--border)' }}>
         <div className="container">
-          <div style={{ height:12, marginBottom:20 }} className="skeleton" style={{ width:120, height:12, marginBottom:20 }} />
+          <div className="skeleton" style={{ width:120, height:12, marginBottom:20 }} />
           <div className="skeleton" style={{ width:'60%', height:48, marginBottom:16 }} />
           <div className="skeleton" style={{ width:140, height:12 }} />
         </div>
