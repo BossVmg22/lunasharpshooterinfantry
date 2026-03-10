@@ -1,7 +1,11 @@
 import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
+import { LightboxProvider } from './contexts/LightboxContext'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
+import BackToTop from './components/BackToTop'
+import CommandPalette from './components/CommandPalette'
+import Breadcrumb from './components/Breadcrumb'
 
 import Home    from './pages/Home'
 import Login   from './pages/Login'
@@ -20,8 +24,12 @@ function BrigadePageKeyed() {
 export default function App() {
   return (
     <AuthProvider>
+      <LightboxProvider>
       <BrowserRouter>
         <Navbar />
+        <Breadcrumb />
+        <BackToTop />
+        <CommandPalette />
         <Routes>
           <Route path="/"         element={<Home />} />
           <Route path="/about"    element={<About />} />
@@ -47,6 +55,7 @@ export default function App() {
           } />
         </Routes>
       </BrowserRouter>
+      </LightboxProvider>
     </AuthProvider>
   )
 }
