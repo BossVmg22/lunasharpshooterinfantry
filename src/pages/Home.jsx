@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase'
 import EditableText from '../components/EditableText'
 import Footer from '../components/Footer'
 import { useAuth } from '../contexts/AuthContext'
-import { useLightbox } from '../contexts/LightboxContext'
+
 
 const CAT_COLORS = { mission: 'var(--gold)', announcement: '#c06060', news: '#6ab46a' }
 
@@ -86,7 +86,9 @@ export default function Home() {
   const { content, save, saving } = useContent('home')
   const { content: brigadesContent } = useContent('brigades')
   const { isMember, isStaff } = useAuth()
-  const { open: openLightbox } = useLightbox()
+  const openLightbox = (src, alt = '', caption = '') => {
+    window.dispatchEvent(new CustomEvent('lsi:lightbox', { detail: { src, alt, caption } }))
+  }
   const navigate = useNavigate()
   const revealRef = useRef([])
   const [latestPosts,   setLatestPosts]   = useState([])
