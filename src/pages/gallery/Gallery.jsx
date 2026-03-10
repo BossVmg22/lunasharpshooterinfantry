@@ -14,9 +14,8 @@ export default function Gallery() {
   const { isStaff, isMember, isAdmin } = useAuth()
   const { content, save, saving } = useContent('gallery_page')
   const { content: gallerySettings, save: saveSettings } = useContent('gallery_settings')
-  const openLightbox = (src, alt = '', caption = '') => {
+  const openLightbox = (src, alt = '', caption = '') =>
     window.dispatchEvent(new CustomEvent('lsi:lightbox', { detail: { src, alt, caption } }))
-  }
 
   const [items,      setItems]      = useState([])
   const [loading,    setLoading]    = useState(true)
