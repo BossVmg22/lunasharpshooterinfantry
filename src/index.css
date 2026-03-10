@@ -373,3 +373,81 @@ textarea, input { font-family: inherit; }
   /* Stats row on home wraps gracefully */
   div[style*="gap: 40"] { gap: 20px !important; }
 }
+
+/* ═══════════════════════════════════════════════
+   HERO MOBILE OVERFLOW FIX
+═══════════════════════════════════════════════ */
+
+/* The hero inner wrapper has inline padding: '0 48px' which causes horizontal
+   overflow on phones. We target it via its parent section. */
+@media (max-width: 768px) {
+  /* Hero section itself must not overflow */
+  section[style*="minHeight"] {
+    overflow-x: hidden !important;
+  }
+
+  /* Hero inner content wrapper — reduce padding on small screens */
+  .hero-content {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    max-width: 100% !important;
+  }
+
+  /* Hero title — clamp minimum is 72px which overflows on phones */
+  .hero-content h1 {
+    font-size: clamp(44px, 13vw, 100px) !important;
+    letter-spacing: 2px !important;
+  }
+
+  /* Hero stat row — wrap on mobile and reduce gap */
+  .hero-content > div[style*="borderTop"] {
+    gap: 18px !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* Hero CTA buttons — stack on very small screens */
+  .hero-content > div[style*="flexWrap"] {
+    gap: 10px !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .hero-content h1 {
+    font-size: 40px !important;
+    letter-spacing: 1px !important;
+  }
+
+  /* Quick links grid — 2 cols on very small screens */
+  div[style*="repeat(4,1fr)"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   DESKTOP ENHANCEMENTS
+═══════════════════════════════════════════════ */
+
+/* Breadcrumb bar — desktop only */
+@media (max-width: 768px) {
+  .breadcrumb-desktop { display: none !important; }
+  .desktop-only { display: none !important; }
+}
+
+/* On desktop, page-wrap needs extra top padding to clear breadcrumb */
+@media (min-width: 769px) {
+  .page-wrap { padding-top: calc(var(--nav-h) + 28px); }
+}
+
+/* Command palette "/ QUICK NAV" hint — hide on touch devices */
+@media (hover: none) {
+  .desktop-only { display: none !important; }
+}
+
+/* ═══════════════════════════════════════════════
+   LIGHTBOX — image zoom hint on hover
+═══════════════════════════════════════════════ */
+.img-zoom-overlay:hover { background: rgba(0,0,0,0.28) !important; }
+.img-zoom-overlay:hover .img-zoom-hint { opacity: 1 !important; }
+
+/* Gallery items — consistent zoom cursor */
+.gallery-item img { cursor: zoom-in; }
