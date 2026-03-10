@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
@@ -28,6 +28,10 @@ export default function Navbar() {
   const navigate  = useNavigate()
   const [open,     setOpen]     = useState(false)
   const [openDrop, setOpenDrop] = useState(null)
+
+  // Swipe-to-close tracking refs
+  const touchStartX = useRef(null)
+  const touchStartY = useRef(null)
 
   const [unitsItems,   setUnitsItems]   = useState(DEFAULT_UNITS)
   const [manualsItems, setManualsItems] = useState(DEFAULT_MANUALS)
@@ -250,7 +254,23 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="lsi-mobile-menu" style={styles.mobileMenu}>
+        <div
+          className="lsi-mobile-menu"
+          style={styles.mobileMenu}
+          onTouchStart={e => {
+            touchStartX.current = e.touches[0].clientX
+            touchStartY.current = e.touches[0].clientY
+          }}
+          onTouchEnd={e => {
+            if (touchStartX.current === null) return
+            const dx = e.changedTouches[0].clientX - touchStartX.current
+            const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current)
+            // Swipe left at least 60px and mostly horizontal → close menu
+            if (dx < -60 && dy < 80) setOpen(false)
+            touchStartX.current = null
+            touchStartY.current = null
+          }}
+        >
           {NAV_LINKS.map(link => {
             if (link.memberOnly && !isMember) return (
               <div key={link.label} style={{ ...styles.mobileLink, color: 'var(--text-muted)' }}>
@@ -259,12 +279,26 @@ export default function Navbar() {
             )
             return (
               <div key={link.label}>
-                <Link to={link.to} style={styles.mobileLink} onClick={() => setOpen(false)}>
+                <Link
+                  to={link.to}
+                  style={{
+                    ...styles.mobileLink,
+                    ...(location.pathname === link.to || location.pathname.startsWith(link.to + '/') && link.to !== '/'
+                      ? styles.mobileLinkActive
+                      : {}),
+                  }}
+                  onClick={() => setOpen(false)}>
                   {link.label}
                 </Link>
                 {link.children?.map(c => (
                   <Link key={c.to} to={c.to}
-                    style={{ ...styles.mobileLink, paddingLeft: 32, fontSize: 12, color: 'var(--text-dim)' }}
+                    style={{
+                      ...styles.mobileLink,
+                      paddingLeft: 32,
+                      fontSize: 12,
+                      color: location.pathname === c.to ? 'var(--gold)' : 'var(--text-dim)',
+                      borderLeft: location.pathname === c.to ? '2px solid var(--gold)' : '2px solid transparent',
+                    }}
                     onClick={() => setOpen(false)}>
                     › {c.label}
                   </Link>
@@ -383,6 +417,12 @@ const styles = {
     display: 'block', padding: '13px 20px',
     fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase',
     color: 'var(--text)', textDecoration: 'none', borderBottom: '1px solid var(--border)',
+    borderLeft: '2px solid transparent',
+  },
+  mobileLinkActive: {
+    color: 'var(--gold)',
+    borderLeft: '2px solid var(--gold)',
+    background: 'rgba(200,149,42,0.05)',
   },
   editBanner: {
     position: 'fixed', top: 'var(--nav-h)', left: 0, right: 0,

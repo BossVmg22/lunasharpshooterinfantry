@@ -35,7 +35,7 @@ React + Vite · Supabase (data) · Cloudinary (images) · Vercel (host) · GitHu
 3. Settings → API → copy **Project URL** and **anon key**
 
 ### 2. Cloudinary
-1. Sign up at [cloudinary.com](https://cloudinary.com) (free tier is plenty)
+1. Si gn up at [cloudinary.com](https://cloudinary.com) (free tier is plenty)
 2. Dashboard → your **Cloud Name** (e.g. `dxyz1234`)
 3. Settings → Upload → **Upload Presets** → Add unsigned preset
    - Name it: `lsi_unsigned`

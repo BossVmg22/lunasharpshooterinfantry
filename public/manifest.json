@@ -1,0 +1,33 @@
+{
+  "name": "Luna Sharpshooters Infantry",
+  "short_name": "LSI",
+  "description": "Official Division Portal — Luna Sharpshooters Infantry, Army Combat Command",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#090d09",
+  "background_color": "#090d09",
+  "lang": "en",
+  "scope": "/",
+  "categories": ["utilities", "social"],
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

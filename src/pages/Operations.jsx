@@ -5,6 +5,7 @@ import { uploadToCloudinary } from '../lib/cloudinary'
 import { useAuth } from '../contexts/AuthContext'
 import { useContent } from '../lib/useContent'
 import EditableText from '../components/EditableText'
+import { SkeletonCard } from '../components/Skeleton'
 import Footer from '../components/Footer'
 
 // ── helpers ──────────────────────────────────────────────────
@@ -21,9 +22,10 @@ function slugify(str) {
 export function Operations() {
   const { isStaff } = useAuth()
   const { content, save, saving } = useContent('operations_page')
-  const [posts,     setPosts]     = useState([])
-  const [loading,   setLoading]   = useState(true)
-  const [filter,    setFilter]    = useState('all')
+  const [posts,   setPosts]   = useState([])
+  const [loading, setLoading] = useState(true)
+  const [filter,  setFilter]  = useState('all')
+  const [search,  setSearch]  = useState('')
   const navigate = useNavigate()
 
   const load = async () => {
@@ -37,7 +39,13 @@ export function Operations() {
 
   useEffect(() => { load() }, [isStaff])
 
-  const filtered = filter === 'all' ? posts : posts.filter(p => p.category === filter)
+  const filtered = posts.filter(p => {
+    const matchCat    = filter === 'all' || p.category === filter
+    const matchSearch = !search ||
+      p.title.toLowerCase().includes(search.toLowerCase()) ||
+      (p.excerpt ?? '').toLowerCase().includes(search.toLowerCase())
+    return matchCat && matchSearch
+  })
 
   const handleDelete = async (e, id) => {
     e.stopPropagation(); e.preventDefault()
@@ -65,43 +73,85 @@ export function Operations() {
         <div className="container" style={{ padding:'40px 40px' }}>
           {/* Toolbar */}
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12, marginBottom:28 }}>
-            <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-              {CATS.map(c => (
-                <button key={c} onClick={() => setFilter(c)}
+            {/* Left: categories + search */}
+            <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap', flex:1 }}>
+              <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+                {CATS.map(c => (
+                  <button key={c} onClick={() => setFilter(c)}
+                    style={{
+                      padding:'5px 14px', fontSize:10, fontWeight:700, letterSpacing:2,
+                      textTransform:'uppercase', cursor:'pointer', border:'1px solid',
+                      fontFamily:'Rajdhani,sans-serif',
+                      background: filter===c ? 'var(--gold)' : 'transparent',
+                      color:      filter===c ? '#090d09'    : 'var(--text-dim)',
+                      borderColor:filter===c ? 'var(--gold)' : 'var(--border2)',
+                      transition:'all 0.15s',
+                    }}>
+                    {c}
+                  </button>
+                ))}
+              </div>
+              {/* Search bar */}
+              <div style={{ position:'relative', flex:'1', minWidth:180, maxWidth:320 }}>
+                <span style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)', fontSize:12, color:'var(--text-muted)', pointerEvents:'none' }}>🔍</span>
+                <input
+                  type="text"
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  placeholder="Search posts…"
                   style={{
-                    padding:'5px 14px', fontSize:10, fontWeight:700, letterSpacing:2,
-                    textTransform:'uppercase', cursor:'pointer', border:'1px solid',
-                    fontFamily:'Rajdhani,sans-serif',
-                    background: filter===c ? 'var(--gold)' : 'transparent',
-                    color:      filter===c ? '#090d09'    : 'var(--text-dim)',
-                    borderColor:filter===c ? 'var(--gold)' : 'var(--border2)',
-                  }}>
-                  {c}
-                </button>
-              ))}
+                    width:'100%', paddingLeft:30, paddingRight:search ? 28 : 10,
+                    paddingTop:5, paddingBottom:5,
+                    background:'var(--bg2)', border:'1px solid var(--border2)',
+                    color:'var(--text)', fontSize:12, fontFamily:'Rajdhani,sans-serif',
+                    outline:'none', letterSpacing:0.5,
+                    transition:'border-color 0.15s',
+                  }}
+                  onFocus={e => e.target.style.borderColor='var(--gold-dim)'}
+                  onBlur={e => e.target.style.borderColor='var(--border2)'}
+                />
+                {search && (
+                  <button onClick={() => setSearch('')}
+                    style={{ position:'absolute', right:8, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', color:'var(--text-muted)', cursor:'pointer', fontSize:12, padding:0, lineHeight:1 }}>
+                    ✕
+                  </button>
+                )}
+              </div>
             </div>
+
             {isStaff && (
               <button onClick={() => navigate('/operations/new')}
-                style={{ padding:'8px 20px', background:'var(--gold)', color:'#090d09', border:'none', fontSize:11, fontWeight:700, letterSpacing:2, cursor:'pointer', textTransform:'uppercase' }}>
+                style={{ padding:'8px 20px', background:'var(--gold)', color:'#090d09', border:'none', fontSize:11, fontWeight:700, letterSpacing:2, cursor:'pointer', textTransform:'uppercase', whiteSpace:'nowrap' }}>
                 + New Post
               </button>
             )}
           </div>
 
+          {/* Search result count */}
+          {search && !loading && (
+            <div style={{ fontSize:11, color:'var(--text-muted)', letterSpacing:1, marginBottom:16 }}>
+              {filtered.length === 0
+                ? `No results for "${search}"`
+                : `${filtered.length} result${filtered.length !== 1 ? 's' : ''} for "${search}"`}
+            </div>
+          )}
+
           {/* Posts grid */}
           {loading ? (
-            <div style={{ textAlign:'center', padding:60, color:'var(--gold)', fontFamily:'Bebas Neue,sans-serif', fontSize:22, letterSpacing:3 }}>LOADING…</div>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(300px, 1fr))', gap:1, background:'var(--border)', border:'1px solid var(--border)' }}>
+              {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+            </div>
           ) : filtered.length === 0 ? (
-            <div style={{ textAlign:'center', padding:60, color:'var(--text-muted)', fontStyle:'italic', fontSize:13 }}>No posts yet.</div>
+            <div style={{ textAlign:'center', padding:60, color:'var(--text-muted)', fontStyle:'italic', fontSize:13 }}>
+              {search ? `No posts match "${search}"` : 'No posts yet.'}
+            </div>
           ) : (
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(300px, 1fr))', gap:1, background:'var(--border)', border:'1px solid var(--border)' }}>
               {filtered.map(post => (
                 <Link key={post.id} to={`/operations/${post.slug}`}
-                  style={{ textDecoration:'none', display:'block', background:'var(--panel)', transition:'background 0.2s' }}
-                  onMouseEnter={e => e.currentTarget.style.background='var(--panel2)'}
-                  onMouseLeave={e => e.currentTarget.style.background='var(--panel)'}>
+                  className="post-card"
+                  style={{ textDecoration:'none', display:'block', background:'var(--panel)' }}>
                   <div style={{ padding:'24px 24px 20px', position:'relative' }}>
-                    {/* Status draft badge */}
                     {isStaff && post.status === 'draft' && (
                       <span style={{ position:'absolute', top:16, right:16, fontSize:9, fontWeight:700, letterSpacing:2, padding:'2px 8px', border:'1px solid var(--border2)', color:'var(--text-muted)', textTransform:'uppercase' }}>
                         DRAFT
@@ -133,7 +183,7 @@ export function Operations() {
                             </span>
                           </>
                         )}
-                        <span style={{ fontSize:10, fontWeight:700, letterSpacing:1, color:'var(--gold)', textDecoration:'none' }}>READ →</span>
+                        <span style={{ fontSize:10, fontWeight:700, letterSpacing:1, color:'var(--gold)' }}>READ →</span>
                       </div>
                     </div>
                   </div>
@@ -163,13 +213,28 @@ export function PostDetail() {
       .then(({ data }) => { setPost(data); setLoading(false) })
   }, [slug])
 
-  if (loading) return <div style={{ padding:120, textAlign:'center', color:'var(--gold)', fontFamily:'Bebas Neue,sans-serif', fontSize:22, letterSpacing:3 }}>LOADING…</div>
-  if (!post)   return <div style={{ padding:120, textAlign:'center', color:'var(--text-dim)', fontSize:14 }}>Post not found.</div>
+  if (loading) return (
+    <div className="page-wrap">
+      <div style={{ padding:'44px 0 36px', background:'var(--bg2)', borderBottom:'1px solid var(--border)' }}>
+        <div className="container">
+          <div style={{ height:12, marginBottom:20 }} className="skeleton" style={{ width:120, height:12, marginBottom:20 }} />
+          <div className="skeleton" style={{ width:'60%', height:48, marginBottom:16 }} />
+          <div className="skeleton" style={{ width:140, height:12 }} />
+        </div>
+      </div>
+      <div className="container" style={{ padding:'52px 40px', maxWidth:780 }}>
+        <div className="skeleton" style={{ width:'100%', height:320, marginBottom:36 }} />
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="skeleton" style={{ width: i % 3 === 2 ? '70%' : '100%', height:16, marginBottom:14 }} />
+        ))}
+      </div>
+    </div>
+  )
+  if (!post) return <div style={{ padding:120, textAlign:'center', color:'var(--text-dim)', fontSize:14 }}>Post not found.</div>
 
   return (
     <>
       <div className="page-wrap">
-        {/* Hero / cover */}
         <div style={{ background:'var(--bg2)', borderBottom:'1px solid var(--border)', padding:'44px 0 36px', position:'relative' }}>
           {post.cover_url && (
             <div style={{ position:'absolute', inset:0, backgroundImage:`url(${post.cover_url})`, backgroundSize:'cover', backgroundPosition:'center', opacity:0.12 }}/>
@@ -199,7 +264,6 @@ export function PostDetail() {
           </div>
         </div>
 
-        {/* Body */}
         <div className="container" style={{ padding:'52px 40px', maxWidth:780 }}>
           {post.cover_url && (
             <img src={post.cover_url} alt={post.title}
@@ -263,7 +327,14 @@ export function PostEditor() {
   }
 
   if (!isStaff) return <div style={{ padding:80, textAlign:'center', color:'#c06060', fontFamily:'Bebas Neue,sans-serif', fontSize:28, letterSpacing:4 }}>ACCESS DENIED</div>
-  if (loading)  return <div style={{ padding:80, textAlign:'center', color:'var(--gold)', fontFamily:'Bebas Neue,sans-serif', fontSize:20, letterSpacing:3 }}>LOADING…</div>
+  if (loading)  return (
+    <div className="page-wrap">
+      <div className="page-hero"><div className="container"><div className="skeleton" style={{ width:200, height:40, marginTop:8 }} /></div></div>
+      <div className="container" style={{ padding:'48px 40px', maxWidth:820 }}>
+        {Array.from({ length: 5 }).map((_, i) => <div key={i} className="skeleton" style={{ height:44, marginBottom:16 }} />)}
+      </div>
+    </div>
+  )
 
   return (
     <>

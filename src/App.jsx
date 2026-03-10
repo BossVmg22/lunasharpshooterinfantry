@@ -1,7 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
+import BackToTop from './components/BackToTop'
+import CommandPalette from './components/CommandPalette'
+import Breadcrumb from './components/Breadcrumb'
 
 import Home    from './pages/Home'
 import Login   from './pages/Login'
@@ -12,16 +15,24 @@ import { PIManual, Handbook, Uniforms } from './pages/manuals/Manuals'
 import Gallery from './pages/gallery/Gallery'
 import { Operations, PostDetail, PostEditor } from './pages/Operations'
 
+function BrigadePageKeyed() {
+  const { id } = useParams()
+  return <BrigadePage key={id} />
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Navbar />
+        <Breadcrumb />
+        <BackToTop />
+        <CommandPalette />
         <Routes>
           <Route path="/"         element={<Home />} />
           <Route path="/about"    element={<About />} />
           <Route path="/brigades" element={<Brigades />} />
-          <Route path="/brigades/:id" element={<BrigadePage />} />
+          <Route path="/brigades/:id" element={<BrigadePageKeyed />} />
           <Route path="/academy"  element={<Academy />} />
           <Route path="/command"  element={<Command />} />
           <Route path="/schedule" element={<Schedule />} />
