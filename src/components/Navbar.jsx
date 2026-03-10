@@ -216,11 +216,11 @@ export default function Navbar() {
 
         /* ── Responsive breakpoints ── */
         @media (max-width: 900px) {
-          .lsi-desktop-links { display: none !important; }
+          .lsi-topnav { display: none !important; }
           .lsi-bottom-nav { display: flex !important; }
           .lsi-pill.username { display: none; }
           /* Push page content above bottom nav */
-          .page-wrap { padding-bottom: var(--bottom-nav-h) !important; }
+          .page-wrap { padding-bottom: var(--bottom-nav-h) !important; padding-top: 0 !important; }
         }
         @media (min-width: 901px) {
           .lsi-bottom-nav { display: none !important; }
