@@ -394,10 +394,10 @@ export function Academy() {
 // Command — dynamic sections (add / rename / delete)
 // ============================================================
 const DEFAULT_PA = [
-  { rank: 'Commander in Chief',                  name: 'PinkLivesssNEW' },
+  { rank: 'Commander in Chief',                  name: '[ Vacant ]' },
   { rank: 'Secretary of National Defense',       name: 'JirokoM09' },
   { rank: 'Commanding General, Philippine Army', name: '[ Vacant ]' },
-  { rank: 'Deputy Commanding General, PA',       name: 'RafGaming543' },
+  { rank: 'Deputy Commanding General, PA',       name: '[ Vacant ]' },
   { rank: 'Chief of Staff, Philippine Army',     name: 'VyreKriegs' },
   { rank: 'Sergeant Major, Philippine Army',     name: 'GabrielDogey2230' },
 ]
