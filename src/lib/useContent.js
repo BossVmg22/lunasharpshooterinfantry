@@ -24,6 +24,7 @@ export function useContent(section) {
   const [content,     setContent]     = useState(cache[section] ?? {})
   const [saving,      setSaving]      = useState(null)
   const [lastUpdated, setLastUpdated] = useState(timestampCache[section] ?? null)
+  const [loading,     setLoading]     = useState(!cache[section])
 
   useEffect(() => {
     setContent(cache[section] ?? {})
@@ -54,6 +55,7 @@ export function useContent(section) {
             timestampCache[section] = latest
             setLastUpdated(latest)
           }
+          setLoading(false)
         })
     }
 
