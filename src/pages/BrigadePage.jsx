@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import EditableText from '../components/EditableText'
 import EditableImage from '../components/EditableImage'
 import Footer from '../components/Footer'
+import Skeleton from '../components/Skeleton'
 
 const addRowBtn = {
   marginTop: 10, padding: '6px 16px', background: 'rgba(200,149,42,0.1)',
@@ -36,7 +37,7 @@ const DEFAULT_PERSONNEL = [
 
 export default function BrigadePage() {
   const { id } = useParams()
-  const { content, save, saving } = useContent(`brigade_${id}`)
+  const { content, save, saving, loading } = useContent(`brigade_${id}`)
   const { isStaff } = useAuth()
 
   // ── Companies — full JSON array, supports delete any ──────────
@@ -68,6 +69,29 @@ export default function BrigadePage() {
 
   // ── Empty-state banner for brand-new brigade ──────────────────
   const isNewBrigade = !content.title && !content.description && companies.every(c => !c.name)
+
+  if (loading) return (
+    <div className="page-wrap">
+      <div className="page-hero">
+        <div className="container">
+          <Skeleton width={160} height={12} style={{ marginBottom: 16 }} />
+          <Skeleton width="60%" height={48} style={{ marginBottom: 12 }} />
+          <Skeleton width="40%" height={14} />
+        </div>
+      </div>
+      <div className="container" style={{ paddingTop: 32, paddingBottom: 48 }}>
+        <Skeleton height={260} style={{ marginBottom: 32 }} />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 32 }}>
+          <Skeleton height={120} />
+          <Skeleton height={120} />
+        </div>
+        <Skeleton width="30%" height={20} style={{ marginBottom: 16 }} />
+        <Skeleton height={13} style={{ marginBottom: 8 }} />
+        <Skeleton height={13} style={{ marginBottom: 8 }} />
+        <Skeleton width="70%" height={13} />
+      </div>
+    </div>
+  )
 
   return (
     <>
