@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase'
 import EditableText from '../components/EditableText'
 import Footer from '../components/Footer'
 import { useAuth } from '../contexts/AuthContext'
-import { useLightbox } from '../contexts/LightboxContext'
+
 
 const CAT_COLORS = { mission: 'var(--gold)', announcement: '#c06060', news: '#6ab46a' }
 
@@ -86,7 +86,8 @@ export default function Home() {
   const { content, save, saving } = useContent('home')
   const { content: brigadesContent } = useContent('brigades')
   const { isMember, isStaff } = useAuth()
-  const { open: openLightbox } = useLightbox()
+  const openLightbox = (src, alt = '', caption = '') =>
+    window.dispatchEvent(new CustomEvent('lsi:lightbox', { detail: { src, alt, caption } }))
   const navigate = useNavigate()
   const revealRef = useRef([])
   const [latestPosts,   setLatestPosts]   = useState([])
@@ -178,7 +179,7 @@ export default function Home() {
             </span>
             <div className="section-label-rule"/>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(140px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal" ref={r(1)}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal" ref={r(1)}>
             {[
               ['quick_1_icon','quick_1_label','quick_1_sub','📋','PI Manual','Practice Inspection','/manuals/pi', true],
               ['quick_2_icon','quick_2_label','quick_2_sub','📖','Handbook','Personnel Rules','/manuals/handbook', true],
@@ -208,7 +209,7 @@ export default function Home() {
             <EditableText value={content.brigades_heading ?? 'Our Brigades'} onSave={v => save('brigades_heading', v)} saving={saving === 'brigades_heading'} tag="span" multiline={false} className="section-label-title" />
             <div className="section-label-rule"/>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fit,minmax(260px,1fr))`, gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal" ref={r(3)}>
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(brigadeIds.length, 3)},1fr)`, gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal" ref={r(3)}>
             {brigadeIds.map(id => (
               <BrigadeHomeCard key={id} id={id} />
             ))}
@@ -319,7 +320,7 @@ export default function Home() {
               <EditableText value={content.gallery_heading ?? 'Gallery'} onSave={v => save('gallery_heading', v)} saving={saving === 'gallery_heading'} tag="span" multiline={false} className="section-label-title" />
               <div className="section-label-rule"/>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(140px,1fr))', gap: 4 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 4 }}>
               {latestGallery.map(img => (
                 <div key={img.id}
                   style={{ aspectRatio: '16/9', overflow: 'hidden', cursor: 'zoom-in', position: 'relative' }}>
