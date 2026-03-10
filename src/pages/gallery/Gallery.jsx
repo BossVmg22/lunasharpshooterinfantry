@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabase'
 import { uploadToCloudinary, optimizeCloudinaryUrl } from '../../lib/cloudinary'
 import { useAuth } from '../../contexts/AuthContext'
 import { useContent } from '../../lib/useContent'
-import { useLightbox } from '../../contexts/LightboxContext'
+
 import EditableText from '../../components/EditableText'
 import { SkeletonGalleryItem } from '../../components/Skeleton'
 import Footer from '../../components/Footer'
@@ -14,7 +14,9 @@ export default function Gallery() {
   const { isStaff, isMember, isAdmin } = useAuth()
   const { content, save, saving } = useContent('gallery_page')
   const { content: gallerySettings, save: saveSettings } = useContent('gallery_settings')
-  const { open: openLightbox } = useLightbox()
+  const openLightbox = (src, alt = '', caption = '') => {
+    window.dispatchEvent(new CustomEvent('lsi:lightbox', { detail: { src, alt, caption } }))
+  }
 
   const [items,      setItems]      = useState([])
   const [loading,    setLoading]    = useState(true)
