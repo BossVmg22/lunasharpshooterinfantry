@@ -172,14 +172,14 @@ export default function Home() {
 
       {/* ── QUICK LINKS ───────────────── */}
       <section style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
-        <div className="container" style={{ padding: '48px 40px' }}>
+        <div className="container" style={{ paddingTop: 48, paddingBottom: 48 }}>
           <div className="section-label reveal" ref={r(0)}>
             <span className="section-label-num">
               <EditableText value={content.quick_heading ?? 'QUICK ACCESS'} onSave={v => save('quick_heading', v)} saving={saving === 'quick_heading'} tag="span" multiline={false} />
             </span>
             <div className="section-label-rule"/>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal" ref={r(1)}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal home-quick-grid" ref={r(1)}>
             {[
               ['quick_1_icon','quick_1_label','quick_1_sub','📋','PI Manual','Practice Inspection','/manuals/pi', true],
               ['quick_2_icon','quick_2_label','quick_2_sub','📖','Handbook','Personnel Rules','/manuals/handbook', true],
@@ -203,13 +203,13 @@ export default function Home() {
 
       {/* ── BRIGADES OVERVIEW — auto-synced from brigade pages ── */}
       <section style={{ borderBottom: '1px solid var(--border)' }}>
-        <div className="container" style={{ padding: '56px 40px' }}>
+        <div className="container" style={{ paddingTop: 56, paddingBottom: 56 }}>
           <div className="section-label reveal" ref={r(2)}>
             <span className="section-label-num">01</span>
             <EditableText value={content.brigades_heading ?? 'Our Brigades'} onSave={v => save('brigades_heading', v)} saving={saving === 'brigades_heading'} tag="span" multiline={false} className="section-label-title" />
             <div className="section-label-rule"/>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(brigadeIds.length, 3)},1fr)`, gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal" ref={r(3)}>
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(brigadeIds.length, 3)},1fr)`, gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="reveal home-brigade-grid" ref={r(3)}>
             {brigadeIds.map(id => (
               <BrigadeHomeCard key={id} id={id} />
             ))}
@@ -224,7 +224,7 @@ export default function Home() {
 
       {/* ── NOTICES ───────────────────── */}
       <section style={{ borderBottom: '1px solid var(--border)' }}>
-        <div className="container" style={{ padding: '56px 40px' }}>
+        <div className="container" style={{ paddingTop: 56, paddingBottom: 56 }}>
           <div className="section-label reveal" ref={r(4)}>
             <span className="section-label-num">02</span>
             <EditableText value={content.notices_heading ?? 'Division Notices'} onSave={v => save('notices_heading', v)} saving={saving === 'notices_heading'} tag="span" multiline={false} className="section-label-title" />
@@ -284,13 +284,13 @@ export default function Home() {
       {/* ── LATEST OPERATIONS ─────────── */}
       {latestPosts.length > 0 && (
         <section style={{ borderBottom: '1px solid var(--border)' }}>
-          <div className="container" style={{ padding: '56px 40px' }}>
+          <div className="container" style={{ paddingTop: 56, paddingBottom: 56 }}>
             <div className="section-label reveal">
               <span className="section-label-num">03</span>
               <EditableText value={content.ops_heading ?? 'Latest Operations'} onSave={v => save('ops_heading', v)} saving={saving === 'ops_heading'} tag="span" multiline={false} className="section-label-title" />
               <div className="section-label-rule"/>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 1, background: 'var(--border)', border: '1px solid var(--border)' }} className="home-ops-grid">
               {latestPosts.map(post => (
                 <div key={post.id} onClick={() => navigate(`/operations/${post.slug}`)}
                   className="post-card"
@@ -314,13 +314,13 @@ export default function Home() {
       {/* ── GALLERY PREVIEW ───────────── */}
       {latestGallery.length > 0 && (
         <section style={{ borderBottom: '1px solid var(--border)' }}>
-          <div className="container" style={{ padding: '56px 40px' }}>
+          <div className="container" style={{ paddingTop: 56, paddingBottom: 56 }}>
             <div className="section-label reveal">
               <span className="section-label-num">04</span>
               <EditableText value={content.gallery_heading ?? 'Gallery'} onSave={v => save('gallery_heading', v)} saving={saving === 'gallery_heading'} tag="span" multiline={false} className="section-label-title" />
               <div className="section-label-rule"/>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 4 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 4 }} className="home-gallery-grid">
               {latestGallery.map(img => (
                 <div key={img.id}
                   style={{ aspectRatio: '16/9', overflow: 'hidden', cursor: 'zoom-in', position: 'relative' }}>
