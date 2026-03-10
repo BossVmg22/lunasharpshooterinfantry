@@ -451,3 +451,58 @@ textarea, input { font-family: inherit; }
 
 /* Gallery items — consistent zoom cursor */
 .gallery-item img { cursor: zoom-in; }
+
+/* ── Mobile responsive fixes ─────────────────── */
+@media (max-width: 768px) {
+  .container { padding: 0 16px; }
+
+  .page-hero { padding: 28px 0 20px; }
+  .page-hero-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .page-hero-meta { text-align: left; }
+
+  .info-grid { grid-template-columns: 1fr; }
+  .info-card.full { grid-column: 1; }
+
+  .two-col { grid-template-columns: 1fr; }
+  .three-col { grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .brigade-card { grid-template-columns: 1fr; }
+  .brigade-tab { border-right: none; border-bottom: 1px solid var(--border); padding: 20px 16px; }
+
+  .data-table thead { display: none; }
+  .data-table tbody tr { display: flex; flex-direction: column; padding: 12px 0; border: 1px solid var(--border); margin-bottom: 8px; }
+  .data-table td { border-right: none; border-bottom: 1px solid var(--border); padding: 8px 14px; display: flex; align-items: center; gap: 8px; }
+  .data-table td:last-child { border-bottom: none; }
+  .data-table td[data-label]::before { content: attr(data-label); font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--gold-dim); text-transform: uppercase; min-width: 80px; flex-shrink: 0; }
+
+  .coc-row { flex-wrap: wrap; }
+  .coc-rank { min-width: 0; }
+  .coc-name { min-width: 0; }
+
+  .nav-links-desktop { display: none !important; }
+  .nav-hamburger { display: flex !important; }
+
+  /* Ensure page content is not hidden under fixed nav */
+  .page-wrap { padding-top: var(--nav-h); }
+
+  /* Staff edit banner pushes content down on mobile */
+  body.staff-mode .page-wrap { padding-top: calc(var(--nav-h) + 28px); }
+
+  /* Navbar right side - hide username pill text on small screens */
+  .nav-username-pill { display: none; }
+
+  /* Section labels wrap better */
+  .section-label { gap: 8px; }
+  .section-label-title { font-size: 20px; }
+
+  /* Operations / post cards */
+  .ops-grid { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 480px) {
+  .three-col { grid-template-columns: 1fr; }
+  .page-hero-title { font-size: 32px !important; }
+}
+
+/* ── Navbar hamburger hidden by default ──────── */
+.nav-hamburger { display: none; }
