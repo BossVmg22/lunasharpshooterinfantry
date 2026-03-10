@@ -237,33 +237,6 @@ export default function ImageCropper({ src, aspect = null, onConfirm, onCancel }
     s.dragStartCrop = { x: s.cropX, y: s.cropY, w: s.cropW, h: s.cropH }
   }
 
-  const onTouchMove = useCallback((e) => {
-    // Pinch zoom
-    if (e.touches.length === 2 && pinchRef.current) {
-      e.preventDefault()
-      const dx   = e.touches[0].clientX - e.touches[1].clientX
-      const dy   = e.touches[0].clientY - e.touches[1].clientY
-      const dist = Math.hypot(dx, dy)
-      const ratio = dist / pinchRef.current.dist
-      const s  = stateRef.current
-      const canvas = canvasRef.current
-      const rect = canvas.getBoundingClientRect()
-      const mx = pinchRef.current.midX - rect.left
-      const my = pinchRef.current.midY - rect.top
-      const newScale = Math.max(0.1, Math.min(10, pinchRef.current.imgScale * ratio))
-      const r = newScale / pinchRef.current.imgScale
-      s.imgX     = mx - (mx - pinchRef.current.imgX) * r
-      s.imgY     = my - (my - pinchRef.current.imgY) * r
-      s.imgScale = newScale
-      clampCrop(s)
-      updateOutput()
-      cancelAnimationFrame(rafRef.current)
-      rafRef.current = requestAnimationFrame(draw)
-      return
-    }
-    onPointerMove(e)
-  }, [onPointerMove, draw])
-
   const onPointerMove = useCallback((e) => {
     e.preventDefault()
     const canvas = canvasRef.current
@@ -307,6 +280,33 @@ export default function ImageCropper({ src, aspect = null, onConfirm, onCancel }
     cancelAnimationFrame(rafRef.current)
     rafRef.current = requestAnimationFrame(draw)
   }, [draw])
+
+  const onTouchMove = useCallback((e) => {
+    // Pinch zoom
+    if (e.touches.length === 2 && pinchRef.current) {
+      e.preventDefault()
+      const dx   = e.touches[0].clientX - e.touches[1].clientX
+      const dy   = e.touches[0].clientY - e.touches[1].clientY
+      const dist = Math.hypot(dx, dy)
+      const ratio = dist / pinchRef.current.dist
+      const s  = stateRef.current
+      const canvas = canvasRef.current
+      const rect = canvas.getBoundingClientRect()
+      const mx = pinchRef.current.midX - rect.left
+      const my = pinchRef.current.midY - rect.top
+      const newScale = Math.max(0.1, Math.min(10, pinchRef.current.imgScale * ratio))
+      const r = newScale / pinchRef.current.imgScale
+      s.imgX     = mx - (mx - pinchRef.current.imgX) * r
+      s.imgY     = my - (my - pinchRef.current.imgY) * r
+      s.imgScale = newScale
+      clampCrop(s)
+      updateOutput()
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = requestAnimationFrame(draw)
+      return
+    }
+    onPointerMove(e)
+  }, [onPointerMove, draw])
 
   const onPointerUp = () => {
     stateRef.current.dragging = null
