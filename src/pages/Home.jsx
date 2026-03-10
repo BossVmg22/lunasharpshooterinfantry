@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 import EditableText from '../components/EditableText'
 import Footer from '../components/Footer'
 import { useAuth } from '../contexts/AuthContext'
+import { useLightbox } from '../contexts/LightboxContext'
 
 const CAT_COLORS = { mission: 'var(--gold)', announcement: '#c06060', news: '#6ab46a' }
 
@@ -85,6 +86,7 @@ export default function Home() {
   const { content, save, saving } = useContent('home')
   const { content: brigadesContent } = useContent('brigades')
   const { isMember, isStaff } = useAuth()
+  const { open: openLightbox } = useLightbox()
   const navigate = useNavigate()
   const revealRef = useRef([])
   const [latestPosts,   setLatestPosts]   = useState([])
@@ -117,7 +119,7 @@ export default function Home() {
         <div style={heroGrid}/>
         {['tl','tr','bl','br'].map(p => <div key={p} style={cornerStyle(p)}/>)}
 
-        <div style={{ position: 'relative', zIndex: 1, padding: '0 48px', maxWidth: 860 }}>
+        <div className="hero-content" style={{ position: 'relative', zIndex: 1, padding: '0 48px', maxWidth: 860 }}>
           <div style={eyebrow}>
             <EditableText value={content.hero_eyebrow ?? 'Official Division Portal'} onSave={v => save('hero_eyebrow', v)} saving={saving === 'hero_eyebrow'} tag="span" multiline={false} />
           </div>
@@ -319,9 +321,11 @@ export default function Home() {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 4 }}>
               {latestGallery.map(img => (
-                <div key={img.id} onClick={() => navigate('/gallery')}
-                  style={{ aspectRatio: '16/9', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}>
+                <div key={img.id}
+                  style={{ aspectRatio: '16/9', overflow: 'hidden', cursor: 'zoom-in', position: 'relative' }}>
                   <img src={img.image_url} alt={img.title}
+                    loading="lazy"
+                    onClick={() => openLightbox(img.image_url, img.title)}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
                     onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
                     onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}/>
@@ -363,5 +367,5 @@ const eyebrow = {
 }
 function cornerStyle(pos) {
   const map = { tl:{top:80,left:48,borderWidth:'2px 0 0 2px'}, tr:{top:80,right:48,borderWidth:'2px 2px 0 0'}, bl:{bottom:40,left:48,borderWidth:'0 0 2px 2px'}, br:{bottom:40,right:48,borderWidth:'0 2px 2px 0'} }
-  return { position: 'absolute', width: 48, height: 48, borderColor: 'var(--gold-dim)', borderStyle: 'solid', opacity: .35, ...map[pos] }
+  return { position: 'absolute', width: 48, height: 48, borderColor: 'var(--gold-dim)', borderStyle: 'solid', opacity: .35, ...map[pos], '@media(max-width:768px)': { display: 'none' } }
 }
