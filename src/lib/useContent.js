@@ -15,6 +15,7 @@ export function useContent(section) {
   const [content,     setContent]     = useState(cache[section] ?? {})
   const [saving,      setSaving]      = useState(null)
   const [lastUpdated, setLastUpdated] = useState(timestampCache[section] ?? null)
+  const [loading,     setLoading]     = useState(!cache[section])
 
   useEffect(() => {
     setContent(cache[section] ?? {})
@@ -34,6 +35,7 @@ export function useContent(section) {
           const map = Object.fromEntries(data.map(r => [r.key, r.value]))
           cache[section] = map
           setContent(map)
+          setLoading(false)
           notify(section, map)
 
           // Track most recent updated_at across all keys in this section
@@ -71,5 +73,5 @@ export function useContent(section) {
     setSaving(null)
   }, [section])
 
-  return { content, save, saving, lastUpdated }
+  return { content, save, saving, lastUpdated, loading }
 }
