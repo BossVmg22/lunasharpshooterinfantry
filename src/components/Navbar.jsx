@@ -348,11 +348,10 @@ export default function Navbar() {
       <div className={`lsi-more-drawer${moreOpen ? ' open' : ''}`}>
         {/* Extra nav links not in bottom tabs */}
         {[
-          { label: 'Gallery',  to: '/gallery',   icon: '🖼️' },
-          { label: 'Command',  to: '/command',   icon: '🏛️' },
+          { label: 'Gallery',  to: '/gallery',   icon: '🖼\uFE0F' },
+          { label: 'Command',  to: '/command',   icon: '🏛\uFE0F' },
           { label: 'Schedule', to: '/schedule',  icon: '📅' },
-          ...(isMember ? [{ label: 'Manuals', to: '/manuals/pi', icon: '📖' }] : []),
-          ...(isAdmin  ? [{ label: 'Admin Panel', to: '/admin', icon: '⚙️' }] : []),
+          ...(isAdmin  ? [{ label: 'Admin Panel', to: '/admin', icon: '⚙\uFE0F' }] : []),
         ].map(item => (
           <Link key={item.to} to={item.to} className="lsi-drawer-link" onClick={() => setMoreOpen(false)}>
             {item.icon} {item.label}
@@ -364,6 +363,16 @@ export default function Navbar() {
         {unitsItems.map(c => (
           <Link key={c.to} to={c.to} className="lsi-drawer-sublink" onClick={() => setMoreOpen(false)}>› {c.label}</Link>
         ))}
+
+        {/* Manuals sub-links — members only */}
+        {isMember && (
+          <>
+            <div className="lsi-drawer-link" style={{ color: 'var(--gold-dim)', fontSize: 10, letterSpacing: 2, paddingBottom: 6 }}>📖 MANUALS</div>
+            {manualsItems.map(c => (
+              <Link key={c.to} to={c.to} className="lsi-drawer-sublink" onClick={() => setMoreOpen(false)}>› {c.label}</Link>
+            ))}
+          </>
+        )}
 
         {/* User info / sign in */}
         <div style={{ padding: '14px 20px', borderTop: '1px solid var(--border)', marginTop: 4 }}>
