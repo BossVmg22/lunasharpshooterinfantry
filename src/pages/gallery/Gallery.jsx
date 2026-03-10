@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase'
 import { uploadToCloudinary, optimizeCloudinaryUrl } from '../../lib/cloudinary'
 import { useAuth } from '../../contexts/AuthContext'
 import { useContent } from '../../lib/useContent'
+import { useLightbox } from '../../contexts/LightboxContext'
 import EditableText from '../../components/EditableText'
 import { SkeletonGalleryItem } from '../../components/Skeleton'
 import Footer from '../../components/Footer'
@@ -13,11 +14,11 @@ export default function Gallery() {
   const { isStaff, isMember, isAdmin } = useAuth()
   const { content, save, saving } = useContent('gallery_page')
   const { content: gallerySettings, save: saveSettings } = useContent('gallery_settings')
+  const { open: openLightbox } = useLightbox()
 
   const [items,      setItems]      = useState([])
   const [loading,    setLoading]    = useState(true)
   const [filter,     setFilter]     = useState('all')
-  const [lightbox,   setLightbox]   = useState(null)
   const [uploading,  setUploading]  = useState(false)
   const [showForm,   setShowForm]   = useState(false)
   const [form,       setForm]       = useState({ title:'', caption:'', image_url:'', category:'general' })
@@ -216,11 +217,12 @@ export default function Gallery() {
           ) : (
             <div style={{ columns:'3 280px', gap:4 }}>
               {filtered.map(item => (
-                <div key={item.id} className="gallery-item" style={{ breakInside:'avoid', marginBottom:4, position:'relative', cursor:'pointer', overflow:'hidden', display:'block' }}
-                  onClick={() => setLightbox(item)}>
+                <div key={item.id} className="gallery-item" style={{ breakInside:'avoid', marginBottom:4, position:'relative', cursor:'zoom-in', overflow:'hidden', display:'block' }}
+                  onClick={() => openLightbox(optimizeCloudinaryUrl(item.image_url, 1200), item.title, item.caption)}>
                   <img
                     src={optimizeCloudinaryUrl(item.image_url, 600)}
                     alt={item.title}
+                    loading="lazy"
                     style={{ width:'100%', display:'block', transition:'transform 0.3s' }}
                     onMouseEnter={e => e.currentTarget.style.transform='scale(1.04)'}
                     onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}
@@ -254,28 +256,6 @@ export default function Gallery() {
           )}
         </div>
       </div>
-
-      {/* Lightbox */}
-      {lightbox && (
-        <div onClick={() => setLightbox(null)}
-          style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.92)', zIndex:5000, display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}>
-          <div onClick={e => e.stopPropagation()}
-            style={{ maxWidth:900, width:'100%', background:'var(--panel)', border:'1px solid var(--border)' }}>
-            <img src={optimizeCloudinaryUrl(lightbox.image_url, 900)} alt={lightbox.title} style={{ width:'100%', maxHeight:'70vh', objectFit:'contain', display:'block' }} />
-            <div style={{ padding:'16px 20px', borderTop:'1px solid var(--border)', display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
-              <div>
-                {lightbox.title   && <div style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:20, color:'var(--bright)', letterSpacing:2 }}>{lightbox.title}</div>}
-                {lightbox.caption && <div style={{ fontSize:13, color:'var(--text-dim)', fontFamily:'Source Serif 4,serif', fontWeight:300, marginTop:4 }}>{lightbox.caption}</div>}
-                <div style={{ fontSize:9, color:'var(--text-muted)', letterSpacing:2, marginTop:6, textTransform:'uppercase' }}>{lightbox.category}</div>
-              </div>
-              <button onClick={() => setLightbox(null)}
-                style={{ background:'none', border:'1px solid var(--border2)', color:'var(--text-dim)', padding:'6px 14px', cursor:'pointer', fontSize:11, letterSpacing:1, fontFamily:'Rajdhani,sans-serif', fontWeight:700 }}>
-                CLOSE
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <Footer/>
     </>
