@@ -104,6 +104,7 @@ export default function Navbar() {
     <>
       <style>{`
         :root { --bottom-nav-h: 56px; }
+        @media (min-width: 901px) { :root { --bottom-nav-h: 0px; } }
 
         /* ── Top navbar ── */
         .lsi-topnav {
