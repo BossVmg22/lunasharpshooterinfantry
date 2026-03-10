@@ -1,22 +1,12 @@
 import { useRef, useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { useLightbox } from '../contexts/LightboxContext'
 import { uploadToCloudinary } from '../lib/cloudinary'
 import ImageCropper from './ImageCropper'
 
 /**
  * EditableImage
- * - Everyone: click image → lightbox fullscreen view
+ * - Everyone: click image → lightbox fullscreen view (via window event)
  * - Staff: pick a file → crop tool → upload cropped result
- * Props:
- *   value       – current image URL
- *   onSave      – (url) => void
- *   alt         – alt text
- *   caption     – optional caption shown in lightbox
- *   style       – wrapper style overrides
- *   placeholder – text when empty
- *   height      – container height in px
- *   aspect      – crop aspect ratio (e.g. 16/9, 1, 2.5) — null = free crop
  */
 export default function EditableImage({
   value = '',
@@ -28,14 +18,12 @@ export default function EditableImage({
   height = 120,
   aspect = null,
 }) {
-  const { isStaff }        = useAuth()
-  const { open: openLightbox } = useLightbox()
-  const inputRef           = useRef()
-  const [cropSrc,  setCropSrc]  = useState(null) // blob URL while cropping
-  const [uploading,setUploading] = useState(false)
-  const [error,    setError]    = useState('')
+  const { isStaff }          = useAuth()
+  const inputRef             = useRef()
+  const [cropSrc, setCropSrc]     = useState(null)
+  const [uploading, setUploading] = useState(false)
+  const [error, setError]         = useState('')
 
-  // Step 1: user picks a file → show cropper
   const handleFileChange = (e) => {
     const file = e.target.files[0]
     if (!file) return
@@ -44,7 +32,6 @@ export default function EditableImage({
     e.target.value = ''
   }
 
-  // Step 2: cropper confirms → upload blob
   const handleCropConfirm = async (blob) => {
     setCropSrc(null)
     setUploading(true)
@@ -59,8 +46,12 @@ export default function EditableImage({
     setUploading(false)
   }
 
-  const handleCropCancel = () => {
-    setCropSrc(null)
+  const handleCropCancel = () => setCropSrc(null)
+
+  // Open lightbox via a custom window event — avoids circular context import
+  const openLightbox = () => {
+    if (!value) return
+    window.dispatchEvent(new CustomEvent('lsi:lightbox', { detail: { src: value, alt, caption } }))
   }
 
   const boxStyle = {
@@ -81,12 +72,11 @@ export default function EditableImage({
       <div style={boxStyle}>
         {value ? (
           <>
-            {/* Image — click = lightbox for everyone */}
             <img
               src={value}
               alt={alt}
               loading="lazy"
-              onClick={() => openLightbox(value, alt, caption)}
+              onClick={openLightbox}
               style={{
                 width: '100%', height: '100%',
                 objectFit: 'cover', display: 'block',
@@ -96,22 +86,6 @@ export default function EditableImage({
               onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.03)'}
               onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
             />
-            {/* Zoom hint */}
-            <div className="img-zoom-overlay" style={{
-              position: 'absolute', inset: 0,
-              background: 'rgba(0,0,0,0)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              transition: 'background 0.2s', pointerEvents: 'none',
-            }}>
-              <span className="img-zoom-hint" style={{
-                fontSize: 9, fontWeight: 700, letterSpacing: 2,
-                color: 'var(--gold)', background: 'rgba(0,0,0,0.7)',
-                padding: '4px 10px', opacity: 0, transition: 'opacity 0.2s',
-                fontFamily: 'Rajdhani, sans-serif', textTransform: 'uppercase',
-              }}>
-                🔍 VIEW FULL
-              </span>
-            </div>
           </>
         ) : (
           <div
@@ -125,7 +99,6 @@ export default function EditableImage({
           </div>
         )}
 
-        {/* Staff upload button */}
         {isStaff && (
           <>
             <button
@@ -141,7 +114,6 @@ export default function EditableImage({
                 cursor: uploading ? 'wait' : 'pointer',
                 fontFamily: 'Rajdhani, sans-serif',
                 zIndex: 2,
-                transition: 'border-color 0.15s',
               }}
             >
               {uploading ? '⏳ UPLOADING…' : value ? '✂️ CROP & REPLACE' : '📷 UPLOAD & CROP'}
@@ -167,7 +139,6 @@ export default function EditableImage({
         )}
       </div>
 
-      {/* Cropper — rendered as portal-like overlay above everything */}
       {cropSrc && (
         <ImageCropper
           src={cropSrc}
