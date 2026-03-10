@@ -3,12 +3,22 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 const LightboxContext = createContext(null)
 
 export function LightboxProvider({ children }) {
-  const [lightbox, setLightbox] = useState(null) // { src, alt, caption }
+  const [lightbox, setLightbox] = useState(null)
 
   const open  = useCallback((src, alt = '', caption = '') => setLightbox({ src, alt, caption }), [])
   const close = useCallback(() => setLightbox(null), [])
 
-  // Close on Escape key
+  // Listen for events from EditableImage (avoids circular import)
+  useEffect(() => {
+    const handler = (e) => {
+      const { src, alt, caption } = e.detail
+      open(src, alt, caption)
+    }
+    window.addEventListener('lsi:lightbox', handler)
+    return () => window.removeEventListener('lsi:lightbox', handler)
+  }, [open])
+
+  // Close on Escape
   useEffect(() => {
     if (!lightbox) return
     const onKey = (e) => { if (e.key === 'Escape') close() }
@@ -39,7 +49,6 @@ export function LightboxProvider({ children }) {
             animation: 'lbFadeIn 0.18s ease',
           }}
         >
-          {/* Close button */}
           <button
             onClick={close}
             style={{
@@ -56,7 +65,6 @@ export function LightboxProvider({ children }) {
             ✕
           </button>
 
-          {/* Image */}
           <img
             src={lightbox.src}
             alt={lightbox.alt}
@@ -72,7 +80,6 @@ export function LightboxProvider({ children }) {
             }}
           />
 
-          {/* Caption */}
           {lightbox.caption && (
             <div
               onClick={e => e.stopPropagation()}
@@ -94,7 +101,6 @@ export function LightboxProvider({ children }) {
             </div>
           )}
 
-          {/* Hint */}
           <div style={{
             position: 'absolute', bottom: 14, left: '50%', transform: 'translateX(-50%)',
             fontSize: 10, letterSpacing: 2, color: 'var(--text-muted)',
