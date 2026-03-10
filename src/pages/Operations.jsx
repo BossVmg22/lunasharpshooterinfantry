@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { uploadToCloudinary } from '../lib/cloudinary'
 import { useAuth } from '../contexts/AuthContext'
 import { useContent } from '../lib/useContent'
+import { useActivityLog } from '../lib/useActivityLog'
 import EditableText from '../components/EditableText'
 import { SkeletonCard } from '../components/Skeleton'
 import Footer from '../components/Footer'
@@ -21,6 +22,7 @@ function slugify(str) {
 // ═══════════════════════════════════════════════════════
 export function Operations() {
   const { isStaff } = useAuth()
+  const { logAction } = useActivityLog()
   const { content, save, saving } = useContent('operations_page')
   const [posts,   setPosts]   = useState([])
   const [loading, setLoading] = useState(true)
@@ -50,8 +52,10 @@ export function Operations() {
   const handleDelete = async (e, id) => {
     e.stopPropagation(); e.preventDefault()
     if (!confirm('Delete this post?')) return
+    const post = posts.find(p => p.id === id)
     await supabase.from('posts').delete().eq('id', id)
     setPosts(prev => prev.filter(p => p.id !== id))
+    logAction('deleted post', post?.title ?? id)
   }
 
   return (
@@ -289,6 +293,7 @@ export function PostEditor() {
   const isNew  = !id
   const navigate = useNavigate()
   const { isStaff } = useAuth()
+  const { logAction } = useActivityLog()
 
   const [form,    setForm]    = useState({ title:'', slug:'', excerpt:'', body:'', cover_url:'', category:'mission', status:'published' })
   const [saving,  setSaving]  = useState(false)
@@ -318,9 +323,11 @@ export function PostEditor() {
     if (isNew) {
       const res = await supabase.from('posts').insert(payload)
       err = res.error
+      if (!err) logAction('created post', form.title)
     } else {
       const res = await supabase.from('posts').update(payload).eq('id', id)
       err = res.error
+      if (!err) logAction('edited post', form.title)
     }
     if (err) { setError(err.message); setSaving(false); return }
     navigate(`/operations/${form.slug}`)
