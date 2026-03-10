@@ -88,7 +88,6 @@ export default function Gallery() {
     if (!confirm('Delete this image?')) return
     await supabase.from('gallery').delete().eq('id', id)
     setItems(prev => prev.filter(i => i.id !== id))
-    if (lightbox?.id === id) setLightbox(null)
   }
 
   return (
