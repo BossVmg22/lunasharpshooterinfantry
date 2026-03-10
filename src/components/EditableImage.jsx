@@ -20,13 +20,22 @@ export default function EditableImage({
 }) {
   const { isStaff }          = useAuth()
   const inputRef             = useRef()
+  const wrapRef              = useRef()
   const [cropSrc, setCropSrc]     = useState(null)
+  const [cropAspect, setCropAspect] = useState(aspect)
   const [uploading, setUploading] = useState(false)
   const [error, setError]         = useState('')
 
   const handleFileChange = (e) => {
     const file = e.target.files[0]
     if (!file) return
+    // Measure the actual rendered box so cropper matches exactly
+    if (wrapRef.current) {
+      const { offsetWidth, offsetHeight } = wrapRef.current
+      if (offsetWidth && offsetHeight) {
+        setCropAspect(offsetWidth / offsetHeight)
+      }
+    }
     const url = URL.createObjectURL(file)
     setCropSrc(url)
     e.target.value = ''
@@ -69,7 +78,7 @@ export default function EditableImage({
 
   return (
     <>
-      <div style={boxStyle}>
+      <div ref={wrapRef} style={boxStyle}>
         {value ? (
           <>
             <img
@@ -142,7 +151,7 @@ export default function EditableImage({
       {cropSrc && (
         <ImageCropper
           src={cropSrc}
-          aspect={aspect}
+          aspect={cropAspect}
           onConfirm={handleCropConfirm}
           onCancel={handleCropCancel}
         />
