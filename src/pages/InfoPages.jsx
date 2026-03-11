@@ -478,7 +478,7 @@ function ChainSection({ title, num, chainKey, content, save, saving, isStaff, on
       </div>
       <div className="coc-list">
         {chain.map((item, idx) => (
-          <div key={idx} className="coc-row" style={{ alignItems: 'stretch' }}>
+          <div key={item.rank + '_' + idx} className="coc-row" style={{ alignItems: 'stretch' }}>
             <div className="coc-num" style={{ display:'flex', alignItems:'center', justifyContent:'center', fontSize: idx === 0 ? 20 : 16, color: idx === 0 ? 'var(--gold)' : 'var(--gold-dim)', fontWeight: idx === 0 ? 700 : 400 }}>
               {String(idx + 1).padStart(2, '0')}
             </div>
