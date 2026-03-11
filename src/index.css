@@ -288,6 +288,7 @@ textarea, input { font-family: inherit; }
   .coc-rank { min-width: 0; flex: 1 1 60%; border-right: none; border-bottom: 1px solid var(--border); }
   .coc-name { min-width: 0; flex: 1 1 100%; padding-top: 8px; padding-bottom: 8px; border-right: none; border-bottom: 1px solid var(--border); }
   .coc-name:last-child { border-bottom: none; }
+  .command-search-wrap { max-width: 100% !important; }
   .footer-grid { grid-template-columns: 1fr; gap: 20px; }
   .page-hero-row { flex-direction: column; }
   .page-hero-meta { text-align: left; }
@@ -342,6 +343,12 @@ textarea, input { font-family: inherit; }
 .stat-block:hover {
   box-shadow: 0 0 0 1px var(--gold-dim);
   background: var(--panel2);
+}
+
+/* Operations posts grid */
+.ops-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 /* Post cards on Operations page */
@@ -575,6 +582,7 @@ textarea, input { font-family: inherit; }
 
   /* Operations / post cards */
   .ops-grid { grid-template-columns: 1fr !important; }
+  .ops-grid .post-card { grid-column: 1 / -1 !important; }
 }
 
 @media (max-width: 480px) {
