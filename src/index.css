@@ -392,6 +392,9 @@ textarea, input { font-family: inherit; }
     overflow-x: hidden !important;
   }
 
+  /* Hide decorative corner brackets — inline media queries don't work in React */
+  .hero-corner { display: none !important; }
+
   /* Hero inner content wrapper — reduce padding on small screens */
   .hero-content {
     padding-left: 20px !important;
