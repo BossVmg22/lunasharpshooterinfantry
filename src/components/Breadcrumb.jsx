@@ -41,35 +41,35 @@ export default function Breadcrumb() {
         position: 'fixed',
         top: 'var(--nav-h)',
         left: 0, right: 0,
-        height: 28,
-        background: 'rgba(9,13,9,0.90)',
+        height: 34,
+        background: 'rgba(9,13,9,0.95)',
         borderBottom: '1px solid var(--border)',
         display: 'flex',
         alignItems: 'center',
         padding: '0 28px',
         zIndex: 995,
-        gap: 6,
-        backdropFilter: 'blur(6px)',
+        gap: 8,
+        backdropFilter: 'blur(8px)',
       }}>
       {crumbs.map((c, i) => {
         const isLast = i === crumbs.length - 1
         return (
-          <span key={c.to} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span key={c.to} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {!isLast ? (
               <Link to={c.to} style={{
-                fontSize: 10, fontWeight: 700, letterSpacing: 2,
+                fontSize: 11, fontWeight: 700, letterSpacing: 2,
                 color: 'var(--text-muted)', textTransform: 'uppercase',
                 textDecoration: 'none', transition: 'color 0.15s',
               }}
-              onMouseEnter={e => e.target.style.color = 'var(--gold-dim)'}
+              onMouseEnter={e => e.target.style.color = 'var(--gold)'}
               onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}
               >{c.label}</Link>
             ) : (
-              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--gold)', textTransform: 'uppercase' }}>
                 {c.label}
               </span>
             )}
-            {!isLast && <span style={{ fontSize: 8, color: 'var(--border2)' }}>›</span>}
+            {!isLast && <span style={{ fontSize: 10, color: 'var(--gold-dim)', fontWeight: 400 }}>›</span>}
           </span>
         )
       })}
