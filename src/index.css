@@ -9,7 +9,7 @@
   --gold-dim:  #7a5a10;
   --gold-pale: #ecdfa0;
   --text:      #cdc8b2;
-  --text-dim:  #686050;
+  --text-dim:  #8a7d6a;
   --text-muted:#4a4438;
   --bright:    #f0ece0;
   --red:       #7a1414;
@@ -79,7 +79,7 @@ textarea, input { font-family: inherit; }
 .content-section:last-child { border-bottom: none; }
 
 .section-label { display: flex; align-items: baseline; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
-.section-label-num   { font-family: 'Bebas Neue', sans-serif; font-size: 12px; color: var(--gold-dim); letter-spacing: 3px; }
+.section-label-num   { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--gold-dim); letter-spacing: 3px; opacity: 0.45; }
 .section-label-title { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--bright); letter-spacing: 3px; }
 .section-label-rule  { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border2), transparent); min-width: 40px; }
 
@@ -117,24 +117,71 @@ textarea, input { font-family: inherit; }
 .info-card h4 { font-size: 15px; font-weight: 700; color: var(--bright); margin-bottom: 6px; }
 .info-card p, .info-card .body-text { font-family: 'Source Serif 4', serif; font-size: 14px; font-weight: 300; color: var(--text); line-height: 1.8; }
 
-/* ── Brigade cards ───────────────────────────── */
-.brigade-cards { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); }
-.brigade-card  { background: var(--panel); display: grid; grid-template-columns: 170px 1fr; }
-.brigade-tab {
-  background: var(--green); padding: 26px 18px;
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; text-align: center;
+/* ── Brigade cards (Option A — horizontal split) ─────────── */
+.brigade-cards-a { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.brigade-card-a {
+  background: var(--panel); display: grid; grid-template-columns: 140px 1fr;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.brigade-card-a:hover {
+  box-shadow: 0 0 0 1px var(--gold-dim), 0 4px 24px rgba(200,149,42,0.12);
+  transform: translateY(-1px); z-index: 1; position: relative;
+}
+.brigade-tab-a {
+  background: linear-gradient(160deg, var(--green-mid) 0%, var(--green) 100%);
+  padding: 22px 14px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
   border-right: 1px solid var(--border); position: relative; overflow: hidden;
 }
-.brigade-tab::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(200,149,42,0.07) 0%, transparent 60%);
+.brigade-tab-a::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--gold), transparent); }
+.brigade-tab-a::after  { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 40%, rgba(200,149,42,0.1), transparent 70%); }
+.brigade-body-a { padding: 20px 24px; display: flex; flex-direction: column; justify-content: center; }
+
+/* Home page brigade card */
+.brigade-home-card {
+  background: var(--panel); display: grid; grid-template-columns: 120px 1fr;
+  cursor: pointer; height: 100%; position: relative; overflow: hidden;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
-.brig-num      { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--gold); line-height: 1; position: relative; }
-.brig-callsign { font-size: 8px; font-weight: 700; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; position: relative; margin-top: 2px; }
-.brig-role     { font-size: 8px; color: var(--gold-dim); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 8px; padding: 2px 8px; border: 1px solid var(--gold-dim); position: relative; }
-.brigade-body  { padding: 26px 30px; }
-.brigade-body h3 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px; color: var(--bright); margin-bottom: 10px; }
+.brigade-home-card:hover { box-shadow: 0 0 0 1px var(--gold-dim), 0 4px 24px rgba(200,149,42,0.12); transform: translateY(-1px); z-index: 1; }
+.brigade-home-left {
+  background: linear-gradient(160deg, var(--green-mid) 0%, var(--green) 100%);
+  padding: 20px 12px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  border-right: 1px solid var(--border); position: relative; overflow: hidden;
+}
+.brigade-home-left::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--gold), transparent); }
+.brigade-home-left::after  { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 40%, rgba(200,149,42,0.1), transparent 70%); }
+.brigade-home-right { padding: 18px 20px; display: flex; flex-direction: column; justify-content: center; }
+
+/* ── CoC redesign ──────────────────────────────────────── */
+.coc-list  { border: 1px solid var(--border); overflow: hidden; }
+.coc-row   { display: flex; align-items: stretch; border-bottom: 1px solid var(--border); transition: background 0.15s ease; }
+.coc-row:last-child { border-bottom: none; }
+.coc-row:first-child { background: rgba(200,149,42,0.03); }
+.coc-row:hover { background: rgba(200,149,42,0.04) !important; }
+.coc-num   { width: 52px; min-width: 52px; font-family: 'Bebas Neue', sans-serif; color: var(--gold-dim); text-align: center; padding: 14px 0; border-right: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
+.coc-rank  { flex: 1; padding: 14px 18px; border-right: 1px solid var(--border); }
+.coc-name  { padding: 14px 18px; min-width: 200px; }
+
+/* ── Masonry gallery ───────────────────────────────────── */
+.home-gallery-masonry { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: auto auto; gap: 3px; }
+.gallery-masonry-item { overflow: hidden; }
+.gallery-masonry-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+.gallery-masonry-item:hover img { transform: scale(1.05); }
+.gallery-masonry-featured { grid-row: 1 / 3; min-height: 240px; }
+.gallery-masonry-item:not(.gallery-masonry-featured) { aspect-ratio: 16/9; }
+
+/* ── Scroll cue bounce ─────────────────────────────────── */
+@keyframes lsi-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+
+/* ── Ghost button gold variant ─────────────────────────── */
+.btn-ghost-gold { padding: 11px 24px; background: rgba(200,149,42,0.04); color: var(--gold); border: 1px solid var(--gold-dim); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.btn-ghost-gold:hover { background: rgba(200,149,42,0.1); border-color: var(--gold); }
+
+/* ── Page hero left gold accent bar ────────────────────── */
+.page-hero { position: relative; }
+.page-hero::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--gold), transparent); }
 
 /* ── Data table ──────────────────────────────── */
 .data-table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); margin: 14px 0; }
@@ -226,8 +273,11 @@ textarea, input { font-family: inherit; }
   .info-grid, .info-grid.cols3 { grid-template-columns: 1fr; }
   .info-card.full { grid-column: 1; }
   .two-col, .three-col { grid-template-columns: 1fr; }
-  .brigade-card { grid-template-columns: 1fr; }
-  .brigade-tab { flex-direction: row; gap: 14px; padding: 14px 20px; justify-content: flex-start; }
+  .brigade-card-a { grid-template-columns: 1fr; }
+  .brigade-tab-a { flex-direction: row; gap: 14px; padding: 14px 20px; justify-content: flex-start; border-right: none; border-bottom: 1px solid var(--border); }
+  .brigade-home-card { grid-template-columns: 1fr; }
+  .brigade-home-left { flex-direction: row; gap: 12px; padding: 14px 18px; justify-content: flex-start; border-right: none; border-bottom: 1px solid var(--border); }
+  .brigade-home-card:hover, .brigade-card-a:hover { transform: none; }
   .data-table thead { display: none; }
   .data-table tr { display: block; margin-bottom: 1px; border: 1px solid var(--border); }
   .data-table td { display: block; border-right: none; border-bottom: 1px solid var(--border); }
@@ -392,9 +442,6 @@ textarea, input { font-family: inherit; }
     overflow-x: hidden !important;
   }
 
-  /* Hide decorative corner brackets — inline media queries don't work in React */
-  .hero-corner { display: none !important; }
-
   /* Hero inner content wrapper — reduce padding on small screens */
   .hero-content {
     padding-left: 20px !important;
@@ -487,8 +534,9 @@ textarea, input { font-family: inherit; }
   .two-col { grid-template-columns: 1fr; }
   .three-col { grid-template-columns: 1fr 1fr; gap: 10px; }
 
-  .brigade-card { grid-template-columns: 1fr; }
-  .brigade-tab { border-right: none; border-bottom: 1px solid var(--border); padding: 20px 16px; }
+  .brigade-tab-a { border-right: none; border-bottom: 1px solid var(--border); padding: 20px 16px; }
+  .home-gallery-masonry { grid-template-columns: 1fr 1fr; }
+  .gallery-masonry-featured { grid-row: auto; min-height: auto; }
 
   /* Home page grids */
   .home-quick-grid  { grid-template-columns: 1fr 1fr !important; }
