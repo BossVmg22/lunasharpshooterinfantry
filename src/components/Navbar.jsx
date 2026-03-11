@@ -142,7 +142,7 @@ export default function Navbar() {
           border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap;
         }
         .lsi-nav-link:hover, .lsi-nav-link.active { color: var(--gold); }
-        .lsi-nav-link.active { border-bottom-color: var(--gold); }
+        .lsi-nav-link.active { border-bottom-color: var(--gold); background: rgba(200,149,42,0.06); }
         .lsi-nav-right {
           margin-left: auto; display: flex; align-items: center; gap: 6px; flex-shrink: 0;
         }
