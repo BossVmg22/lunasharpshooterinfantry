@@ -449,8 +449,14 @@ function getDefaultChain(chainKey) {
   return []
 }
 
-function ChainSection({ title, num, chainKey, content, save, saving, isStaff, onRenameSection, onDeleteSection, onMoveSection, isFirst, isLast }) {
+function ChainSection({ title, num, chainKey, content, save, saving, isStaff, onRenameSection, onDeleteSection, onMoveSection, isFirst, isLast, query }) {
   const chain = parseJSON(content[chainKey], getDefaultChain(chainKey))
+  const q = (query ?? '').toLowerCase().trim()
+  const filtered = q
+    ? chain.map((item, originalIdx) => ({ ...item, originalIdx })).filter(item =>
+        item.rank.toLowerCase().includes(q) || item.name.toLowerCase().includes(q)
+      )
+    : chain.map((item, originalIdx) => ({ ...item, originalIdx }))
 
   const updateItem = (idx, field, val) => {
     const updated = chain.map((item, i) => i === idx ? { ...item, [field]: val } : item)
@@ -491,36 +497,53 @@ function ChainSection({ title, num, chainKey, content, save, saving, isStaff, on
         )}
       </div>
       <div className="coc-list">
-        {chain.map((item, idx) => (
-          <div key={item.rank + '_' + idx} className="coc-row" style={{ alignItems: 'stretch' }}>
-            <div className="coc-num" style={{ display:'flex', alignItems:'center', justifyContent:'center', fontSize: idx === 0 ? 20 : 16, color: idx === 0 ? 'var(--gold)' : 'var(--gold-dim)', fontWeight: idx === 0 ? 700 : 400 }}>
-              {String(idx + 1).padStart(2, '0')}
+        {filtered.length === 0 ? (
+          <div style={{ padding:'20px 18px', fontSize:12, color:'var(--text-muted)', fontFamily:'Rajdhani,sans-serif', letterSpacing:1 }}>
+            No results in this section.
+          </div>
+        ) : (
+          filtered.map((item, idx) => {
+            const originalIdx = item.originalIdx
+            return (
+          <div key={item.rank + '_' + originalIdx} className="coc-row" style={{ alignItems: 'stretch' }}>
+            <div className="coc-num" style={{ display:'flex', alignItems:'center', justifyContent:'center', fontSize: originalIdx === 0 ? 20 : 16, color: originalIdx === 0 ? 'var(--gold)' : 'var(--gold-dim)', fontWeight: originalIdx === 0 ? 700 : 400 }}>
+              {String(originalIdx + 1).padStart(2, '0')}
             </div>
             <div className="coc-rank" style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', borderRight:'1px solid var(--border)' }}>
-              <EditableText value={item.rank} onSave={v => updateItem(idx, 'rank', v)} saving={saving === chainKey} tag="span" multiline={false} placeholder="Position title…"
+              <EditableText value={item.rank} onSave={v => updateItem(originalIdx, 'rank', v)} saving={saving === chainKey} tag="span" multiline={false} placeholder="Position title…"
                 style={{ fontSize:13, fontWeight:700, color:'var(--bright)', letterSpacing:0.5 }} />
-              <EditableText value={item.roleLabel ?? (idx === 0 ? 'Division Head' : idx === 1 ? 'Division Staff' : 'Brigade Staff')} onSave={v => updateItem(idx, 'roleLabel', v)} saving={saving === chainKey} tag="div" multiline={false} placeholder="Role label…"
+              <EditableText value={item.roleLabel ?? (originalIdx === 0 ? 'Division Head' : originalIdx === 1 ? 'Division Staff' : 'Brigade Staff')} onSave={v => updateItem(originalIdx, 'roleLabel', v)} saving={saving === chainKey} tag="div" multiline={false} placeholder="Role label…"
                 style={{ fontSize:9, color:'var(--text-muted)', letterSpacing:1, textTransform:'uppercase', marginTop:1 }} />
             </div>
             <div className="coc-name" style={{ display:'flex', flexDirection:'column', justifyContent:'center', minWidth:200 }}>
-              <EditableText value={item.name} onSave={v => updateItem(idx, 'name', v)} saving={saving === chainKey} tag="span" multiline={false} placeholder="[ Vacant ]"
+              <EditableText value={item.name} onSave={v => updateItem(originalIdx, 'name', v)} saving={saving === chainKey} tag="span" multiline={false} placeholder="[ Vacant ]"
                 style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:16, color:'var(--gold-pale)', letterSpacing:2 }} />
               <div style={{ fontSize:8, color:'var(--text-muted)', letterSpacing:1, textTransform:'uppercase', marginTop:2 }}>Username</div>
             </div>
             <div style={{ padding:'12px 14px', display:'flex', alignItems:'center', gap:4 }}>
-              {isStaff && (
+              {isStaff && !q && (
                 <>
-                  <button onClick={() => moveItem(idx, -1)} disabled={idx === 0} title="Move Up" style={{ ...delBtn, fontSize:11, padding:'2px 5px', opacity: idx === 0 ? 0.3 : 1 }}>↑</button>
-                  <button onClick={() => moveItem(idx, 1)} disabled={idx === chain.length - 1} title="Move Down" style={{ ...delBtn, fontSize:11, padding:'2px 5px', opacity: idx === chain.length - 1 ? 0.3 : 1 }}>↓</button>
-                  <button onClick={() => deleteItem(idx)} style={delBtn} title="Delete row">✕</button>
+                  <button onClick={() => moveItem(originalIdx, -1)} disabled={originalIdx === 0} title="Move Up" style={{ ...delBtn, fontSize:11, padding:'2px 5px', opacity: originalIdx === 0 ? 0.3 : 1 }}>↑</button>
+                  <button onClick={() => moveItem(originalIdx, 1)} disabled={originalIdx === chain.length - 1} title="Move Down" style={{ ...delBtn, fontSize:11, padding:'2px 5px', opacity: originalIdx === chain.length - 1 ? 0.3 : 1 }}>↓</button>
+                  <button onClick={() => deleteItem(originalIdx)} style={delBtn} title="Delete row">✕</button>
                 </>
+              )}
+              {isStaff && q && (
+                <button onClick={() => deleteItem(originalIdx)} style={delBtn} title="Delete row">✕</button>
               )}
             </div>
           </div>
-        ))}
+            )
+          })
+        )}
       </div>
-      {isStaff && (
+      {isStaff && !q && (
         <button onClick={addItem} style={addRowBtn}>+ Add Row</button>
+      )}
+      {q && filtered.length > 0 && (
+        <div style={{ marginTop:8, fontSize:10, color:'var(--gold-dim)', fontFamily:'Rajdhani,sans-serif', letterSpacing:1 }}>
+          {filtered.length} match{filtered.length !== 1 ? 'es' : ''} in this section
+        </div>
       )}
     </>
   )
@@ -529,6 +552,7 @@ function ChainSection({ title, num, chainKey, content, save, saving, isStaff, on
 export function Command() {
   const { content, save, saving, loading } = useContent('command')
   const { isStaff } = useAuth()
+  const [query, setQuery] = useState('')
 
   const sections = parseJSON(content.command_sections, DEFAULT_COMMAND_SECTIONS)
   const saveSections = (updated) => save('command_sections', JSON.stringify(updated))
@@ -572,6 +596,30 @@ export function Command() {
         </div>
         <div className="container">
           <div className="content-section">
+            {!loading && (
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ position: 'relative', maxWidth: 380 }}>
+                  <span style={{ position:'absolute', left:12, top:'50%', transform:'translateY(-50%)', fontSize:12, color:'var(--gold-dim)', pointerEvents:'none' }}>⌕</span>
+                  <input
+                    type="text"
+                    value={query}
+                    onChange={e => setQuery(e.target.value)}
+                    placeholder="Search by name or position…"
+                    style={{
+                      width: '100%', boxSizing: 'border-box',
+                      background: 'var(--panel)', border: '1px solid',
+                      borderColor: query ? 'var(--gold-dim)' : 'var(--border)',
+                      color: 'var(--text)', padding: '9px 12px 9px 32px',
+                      fontSize: 12, fontFamily: 'Rajdhani, sans-serif', letterSpacing: 1,
+                      outline: 'none', transition: 'border-color 0.2s',
+                    }}
+                  />
+                  {query && (
+                    <button onClick={() => setQuery('')} style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', color:'var(--gold-dim)', cursor:'pointer', fontSize:14, lineHeight:1, padding:0 }}>✕</button>
+                  )}
+                </div>
+              </div>
+            )}
             {loading ? (
               <div>
                 {[1,2].map(n => (
@@ -600,6 +648,7 @@ export function Command() {
                     title={sec.title}
                     num={idx + 1}
                     chainKey={sec.chainKey}
+                    query={query}
                     content={content} save={save} saving={saving} isStaff={isStaff}
                     onRenameSection={isStaff ? (v) => renameSection(idx, v) : null}
                     onDeleteSection={isStaff && sections.length > 1 ? () => deleteSection(idx) : null}
