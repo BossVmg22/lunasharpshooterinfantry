@@ -45,7 +45,6 @@ export function About() {
             </div>
           </div>
         </div>
-
         <div className="container">
           <div className="content-section">
             <div className="section-label">
@@ -86,7 +85,6 @@ export function About() {
               ))}
             </div>
           </div>
-
           <div className="content-section">
             <div className="section-label">
               <span className="section-label-num">1.2</span>
@@ -142,7 +140,7 @@ export function About() {
 }
 
 // ============================================================
-// Brigades — fully dynamic list (add / remove brigades)
+// Brigades
 // ============================================================
 const DEFAULT_BRIGADE_IDS = ['101', '102', '104']
 
@@ -205,50 +203,50 @@ export function Brigades() {
                 ))}
               </div>
             ) : (
-            <div className="brigade-cards-a">
-              {brigadeIds.map(id => {
-                const nk  = `brigade_${id}_num`
-                const ck  = `brigade_${id}_callsign`
-                const rk  = `brigade_${id}_role`
-                const dk  = `brigade_${id}_desc`
-                const ek  = `brigade_${id}_extra`
-                const mk  = `brigade_${id}_motto`
-                const imgk = `brigade_${id}_img`
-                return (
-                  <div key={id} className="brigade-card-a" style={{ position: 'relative' }}>
-                    {isStaff && (
-                      <button onClick={() => removeBrigade(id)} style={{ ...delBtn, position: 'absolute', top: 8, right: 8, fontSize: 11, zIndex: 2 }} title={`Remove Brigade ${id}`}>✕ Remove</button>
-                    )}
-                    {/* Left panel */}
-                    <div className="brigade-tab-a">
-                      <EditableImage value={content[imgk] ?? ''} onSave={v => save(imgk,v)} alt={'Brigade '+id} height={72} placeholder="Upload" style={{ marginBottom: 8, width: '100%', objectFit: 'cover' }} />
-                      <EditableText value={content[nk] ?? id} onSave={v => save(nk,v)} saving={saving===nk} tag="div" multiline={false} placeholder="No." style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:52, color:'var(--gold)', lineHeight:1, letterSpacing:2, position:'relative', zIndex:1, textShadow:'0 0 30px rgba(200,149,42,0.25)' }} />
-                      <EditableText value={content[ck] ?? ''} onSave={v => save(ck,v)} saving={saving===ck} tag="div" multiline={false} placeholder="Callsign…" style={{ fontSize:8, fontWeight:700, letterSpacing:3, color:'var(--gold-dim)', textTransform:'uppercase', marginTop:4, position:'relative', zIndex:1 }} />
-                    </div>
-                    {/* Right panel */}
-                    <div className="brigade-body-a">
-                      <div style={{ marginBottom: 8 }}>
-                        <EditableText value={content[rk] ?? ''} onSave={v => save(rk,v)} saving={saving===rk} tag="span" multiline={false} placeholder="Role…" style={{ display:'inline-block', fontSize:8, fontWeight:700, letterSpacing:2, color:'var(--gold)', textTransform:'uppercase', padding:'2px 8px', border:'1px solid var(--gold-dim)', background:'rgba(200,149,42,0.05)' }} />
+              <>
+                <div className="brigade-cards-a">
+                  {brigadeIds.map(id => {
+                    const nk   = `brigade_${id}_num`
+                    const ck   = `brigade_${id}_callsign`
+                    const rk   = `brigade_${id}_role`
+                    const dk   = `brigade_${id}_desc`
+                    const ek   = `brigade_${id}_extra`
+                    const mk   = `brigade_${id}_motto`
+                    const imgk = `brigade_${id}_img`
+                    return (
+                      <div key={id} className="brigade-card-a" style={{ position: 'relative' }}>
+                        {isStaff && (
+                          <button onClick={() => removeBrigade(id)} style={{ ...delBtn, position: 'absolute', top: 8, right: 8, fontSize: 11, zIndex: 2 }} title={`Remove Brigade ${id}`}>✕ Remove</button>
+                        )}
+                        <div className="brigade-tab-a">
+                          <EditableImage value={content[imgk] ?? ''} onSave={v => save(imgk,v)} alt={'Brigade '+id} height={72} placeholder="Upload" style={{ marginBottom: 8, width: '100%', objectFit: 'cover' }} />
+                          <EditableText value={content[nk] ?? id} onSave={v => save(nk,v)} saving={saving===nk} tag="div" multiline={false} placeholder="No." style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:52, color:'var(--gold)', lineHeight:1, letterSpacing:2, position:'relative', zIndex:1, textShadow:'0 0 30px rgba(200,149,42,0.25)' }} />
+                          <EditableText value={content[ck] ?? ''} onSave={v => save(ck,v)} saving={saving===ck} tag="div" multiline={false} placeholder="Callsign…" style={{ fontSize:8, fontWeight:700, letterSpacing:3, color:'var(--gold-dim)', textTransform:'uppercase', marginTop:4, position:'relative', zIndex:1 }} />
+                        </div>
+                        <div className="brigade-body-a">
+                          <div style={{ marginBottom: 8 }}>
+                            <EditableText value={content[rk] ?? ''} onSave={v => save(rk,v)} saving={saving===rk} tag="span" multiline={false} placeholder="Role…" style={{ display:'inline-block', fontSize:8, fontWeight:700, letterSpacing:2, color:'var(--gold)', textTransform:'uppercase', padding:'2px 8px', border:'1px solid var(--gold-dim)', background:'rgba(200,149,42,0.05)' }} />
+                          </div>
+                          <EditableText value={content[dk] ?? ''} onSave={v => save(dk,v)} saving={saving===dk} tag="p" placeholder="Enter brigade description…" style={{ fontFamily:'Source Serif 4,serif', fontSize:13.5, fontWeight:300, color:'var(--text)', lineHeight:1.8, marginBottom:10 }} />
+                          <EditableText value={content[ek] ?? ''} onSave={v => save(ek,v)} saving={saving===ek} tag="p" multiline={false} placeholder="Companies and arms info…" style={{ fontSize:13, color:'var(--text-dim)', marginBottom:10 }} />
+                          <div className="motto">
+                            <span className="motto-label">Motto</span>
+                            <EditableText value={content[mk] ?? ''} onSave={v => save(mk,v)} saving={saving===mk} tag="span" multiline={false} placeholder="Enter motto…" style={{ fontStyle:'italic' }} />
+                          </div>
+                          <Link to={`/brigades/${id}`} style={{ marginTop:14, fontSize:9, fontWeight:700, letterSpacing:2, color:'var(--gold)', textTransform:'uppercase', display:'flex', alignItems:'center', gap:6, textDecoration:'none', cursor:'pointer' }}>
+                            <span style={{ flex:1, height:1, background:'linear-gradient(90deg,var(--gold-dim),transparent)' }}/>
+                            View Full Brigade →
+                          </Link>
+                        </div>
                       </div>
-                      <EditableText value={content[dk] ?? ''} onSave={v => save(dk,v)} saving={saving===dk} tag="p" placeholder="Enter brigade description…" style={{ fontFamily:'Source Serif 4,serif', fontSize:13.5, fontWeight:300, color:'var(--text)', lineHeight:1.8, marginBottom:10 }} />
-                      <EditableText value={content[ek] ?? ''} onSave={v => save(ek,v)} saving={saving===ek} tag="p" multiline={false} placeholder="Companies and arms info…" style={{ fontSize:13, color:'var(--text-dim)', marginBottom:10 }} />
-                      <div className="motto">
-                        <span className="motto-label">Motto</span>
-                        <EditableText value={content[mk] ?? ''} onSave={v => save(mk,v)} saving={saving===mk} tag="span" multiline={false} placeholder="Enter motto…" style={{ fontStyle:'italic' }} />
-                      </div>
-                      <Link to={`/brigades/${id}`} style={{ marginTop:14, fontSize:9, fontWeight:700, letterSpacing:2, color:'var(--gold)', textTransform:'uppercase', display:'flex', alignItems:'center', gap:6, textDecoration:'none', cursor:'pointer' }}>
-                        <span style={{ flex:1, height:1, background:'linear-gradient(90deg,var(--gold-dim),transparent)' }}/>
-                        View Full Brigade →
-                      </Link>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-            {isStaff && (
-              <button onClick={addBrigade} style={{ ...addRowBtn, marginTop: 20 }}>+ Add Brigade</button>
+                    )
+                  })}
+                </div>
+                {isStaff && (
+                  <button onClick={addBrigade} style={{ ...addRowBtn, marginTop: 20 }}>+ Add Brigade</button>
+                )}
+              </>
             )}
-            </> )}
           </div>
         </div>
       </div>
@@ -280,12 +278,10 @@ export function Academy() {
             </div>
           </div>
         </div>
-
         <div className="container">
           <div className="content-section">
             <EditableImage value={content.banner_img ?? ''} onSave={v => save('banner_img',v)} alt="Academy Banner" height={260} placeholder="Upload academy banner image" />
           </div>
-
           <div className="content-section">
             <div className="section-label">
               <span className="section-label-num">01</span>
@@ -316,7 +312,6 @@ export function Academy() {
               </p>
             </div>
           </div>
-
           <div className="content-section">
             <div className="section-label">
               <span className="section-label-num">02</span>
@@ -340,7 +335,6 @@ export function Academy() {
               ))}
             </div>
           </div>
-
           <div className="content-section">
             <div className="section-label">
               <span className="section-label-num">03</span>
@@ -380,7 +374,6 @@ export function Academy() {
               </div>
             </div>
           </div>
-
           <div className="content-section">
             <div className="section-label">
               <span className="section-label-num">04</span>
@@ -405,7 +398,6 @@ export function Academy() {
               ))}
             </div>
           </div>
-
           <div className="content-section">
             <div className="section-label">
               <span className="section-label-num">05</span>
@@ -422,7 +414,7 @@ export function Academy() {
 }
 
 // ============================================================
-// Command — dynamic sections (add / rename / delete)
+// Command
 // ============================================================
 const DEFAULT_PA = [
   { rank: 'Commander in Chief',                  name: '[ Vacant ]' },
@@ -447,8 +439,8 @@ const DEFAULT_LSI = [
 ]
 
 const DEFAULT_COMMAND_SECTIONS = [
-  { title: 'Philippine Army High Command',    chainKey: 'pa_chain' },
-  { title: 'LSI Division Chain of Command',  chainKey: 'lsi_chain' },
+  { title: 'Philippine Army High Command',   chainKey: 'pa_chain' },
+  { title: 'LSI Division Chain of Command', chainKey: 'lsi_chain' },
 ]
 
 function getDefaultChain(chainKey) {
@@ -539,23 +531,19 @@ export function Command() {
   const { isStaff } = useAuth()
 
   const sections = parseJSON(content.command_sections, DEFAULT_COMMAND_SECTIONS)
-
   const saveSections = (updated) => save('command_sections', JSON.stringify(updated))
 
   const addSection = () => {
     const newKey = `custom_chain_${Date.now()}`
     saveSections([...sections, { title: 'New Chain of Command', chainKey: newKey }])
   }
-
   const deleteSection = (idx) => {
     if (sections.length <= 1) return
     saveSections(sections.filter((_, i) => i !== idx))
   }
-
   const renameSection = (idx, newTitle) => {
     saveSections(sections.map((s, i) => i === idx ? { ...s, title: newTitle } : s))
   }
-
   const moveSection = (idx, dir) => {
     const swapIdx = idx + dir
     if (swapIdx < 0 || swapIdx >= sections.length) return
@@ -606,23 +594,23 @@ export function Command() {
               </div>
             ) : (
               <>
-            {sections.map((sec, idx) => (
-              <ChainSection
-                key={sec.chainKey}
-                title={sec.title}
-                num={idx + 1}
-                chainKey={sec.chainKey}
-                content={content} save={save} saving={saving} isStaff={isStaff}
-                onRenameSection={isStaff ? (v) => renameSection(idx, v) : null}
-                onDeleteSection={isStaff && sections.length > 1 ? () => deleteSection(idx) : null}
-                onMoveSection={isStaff ? (dir) => moveSection(idx, dir) : null}
-                isFirst={idx === 0}
-                isLast={idx === sections.length - 1}
-              />
-            ))}
-            {isStaff && (
-              <button onClick={addSection} style={{ ...addRowBtn, marginTop: 32 }}>+ Add Section</button>
-            )}
+                {sections.map((sec, idx) => (
+                  <ChainSection
+                    key={sec.chainKey}
+                    title={sec.title}
+                    num={idx + 1}
+                    chainKey={sec.chainKey}
+                    content={content} save={save} saving={saving} isStaff={isStaff}
+                    onRenameSection={isStaff ? (v) => renameSection(idx, v) : null}
+                    onDeleteSection={isStaff && sections.length > 1 ? () => deleteSection(idx) : null}
+                    onMoveSection={isStaff ? (dir) => moveSection(idx, dir) : null}
+                    isFirst={idx === 0}
+                    isLast={idx === sections.length - 1}
+                  />
+                ))}
+                {isStaff && (
+                  <button onClick={addSection} style={{ ...addRowBtn, marginTop: 32 }}>+ Add Section</button>
+                )}
               </>
             )}
           </div>
@@ -735,7 +723,7 @@ export function Schedule() {
             )}
             <div className="alert" style={{ marginTop:20 }}>
               <p>
-                <EditableText value={content.alert_text ?? 'No major events, phases, or selections before 4:00 PM GMT+8 Monday–Friday, respecting each member\'s academic and personal responsibilities.'} onSave={v => save('alert_text',v)} saving={saving==='alert_text'} tag="span" placeholder="Enter schedule policy note…" />
+                <EditableText value={content.alert_text ?? "No major events, phases, or selections before 4:00 PM GMT+8 Monday–Friday, respecting each member's academic and personal responsibilities."} onSave={v => save('alert_text',v)} saving={saving==='alert_text'} tag="span" placeholder="Enter schedule policy note…" />
               </p>
             </div>
           </div>
