@@ -598,7 +598,7 @@ export function Command() {
           <div className="content-section">
             {!loading && (
               <div style={{ marginBottom: 24 }}>
-                <div style={{ position: 'relative', maxWidth: 380 }}>
+                <div className="command-search-wrap" style={{ position: 'relative', maxWidth: 380 }}>
                   <span style={{ position:'absolute', left:12, top:'50%', transform:'translateY(-50%)', fontSize:12, color:'var(--gold-dim)', pointerEvents:'none' }}>⌕</span>
                   <input
                     type="text"
