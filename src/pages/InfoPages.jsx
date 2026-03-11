@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useContent } from '../lib/useContent'
 import { useAuth } from '../contexts/AuthContext'
 import EditableText from '../components/EditableText'
@@ -214,10 +215,10 @@ export function Brigades() {
                         <span className="motto-label">Motto</span>
                         <EditableText value={content[mk] ?? ''} onSave={v => save(mk,v)} saving={saving===mk} tag="span" multiline={false} placeholder="Enter motto…" style={{ fontStyle:'italic' }} />
                       </div>
-                      <div style={{ marginTop:14, fontSize:9, fontWeight:700, letterSpacing:2, color:'var(--gold)', textTransform:'uppercase', display:'flex', alignItems:'center', gap:6 }}>
+                      <Link to={`/brigades/${id}`} style={{ marginTop:14, fontSize:9, fontWeight:700, letterSpacing:2, color:'var(--gold)', textTransform:'uppercase', display:'flex', alignItems:'center', gap:6, textDecoration:'none', cursor:'pointer' }}>
                         <span style={{ flex:1, height:1, background:'linear-gradient(90deg,var(--gold-dim),transparent)' }}/>
                         View Full Brigade →
-                      </div>
+                      </Link>
                     </div>
                   </div>
                 )
@@ -434,7 +435,7 @@ function getDefaultChain(chainKey) {
   return []
 }
 
-function ChainSection({ title, num, chainKey, content, save, saving, isStaff, onRenameSection, onDeleteSection }) {
+function ChainSection({ title, num, chainKey, content, save, saving, isStaff, onRenameSection, onDeleteSection, onMoveSection, isFirst, isLast }) {
   const chain = parseJSON(content[chainKey], getDefaultChain(chainKey))
 
   const updateItem = (idx, field, val) => {
@@ -444,8 +445,15 @@ function ChainSection({ title, num, chainKey, content, save, saving, isStaff, on
   const deleteItem = (idx) => {
     save(chainKey, JSON.stringify(chain.filter((_, i) => i !== idx)))
   }
+  const moveItem = (idx, dir) => {
+    const newChain = [...chain]
+    const swapIdx = idx + dir
+    if (swapIdx < 0 || swapIdx >= newChain.length) return
+    ;[newChain[idx], newChain[swapIdx]] = [newChain[swapIdx], newChain[idx]]
+    save(chainKey, JSON.stringify(newChain))
+  }
   const addItem = () => {
-    save(chainKey, JSON.stringify([...chain, { rank: 'New Position', name: '[ Vacant ]' }]))
+    save(chainKey, JSON.stringify([...chain, { rank: 'New Position', name: '[ Vacant ]', roleLabel: 'Brigade Staff' }]))
   }
 
   return (
@@ -461,6 +469,12 @@ function ChainSection({ title, num, chainKey, content, save, saving, isStaff, on
         {isStaff && onDeleteSection && (
           <button onClick={onDeleteSection} style={{ ...delBtn, marginLeft: 12, fontSize: 11 }} title="Delete section">✕ Remove Section</button>
         )}
+        {isStaff && onMoveSection && (
+          <>
+            <button onClick={() => onMoveSection(-1)} disabled={isFirst} title="Move Section Up" style={{ ...delBtn, marginLeft: 6, fontSize: 11, opacity: isFirst ? 0.3 : 1 }}>↑ Section</button>
+            <button onClick={() => onMoveSection(1)} disabled={isLast} title="Move Section Down" style={{ ...delBtn, marginLeft: 4, fontSize: 11, opacity: isLast ? 0.3 : 1 }}>↓ Section</button>
+          </>
+        )}
       </div>
       <div className="coc-list">
         {chain.map((item, idx) => (
@@ -471,24 +485,21 @@ function ChainSection({ title, num, chainKey, content, save, saving, isStaff, on
             <div className="coc-rank" style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', borderRight:'1px solid var(--border)' }}>
               <EditableText value={item.rank} onSave={v => updateItem(idx, 'rank', v)} saving={saving === chainKey} tag="span" multiline={false} placeholder="Position title…"
                 style={{ fontSize:13, fontWeight:700, color:'var(--bright)', letterSpacing:0.5 }} />
-              <div style={{ fontSize:9, color:'var(--text-muted)', letterSpacing:1, textTransform:'uppercase', marginTop:1 }}>
-                {idx === 0 ? 'Division Head' : idx === 1 ? 'Division Staff' : 'Brigade Staff'}
-              </div>
+              <EditableText value={item.roleLabel ?? (idx === 0 ? 'Division Head' : idx === 1 ? 'Division Staff' : 'Brigade Staff')} onSave={v => updateItem(idx, 'roleLabel', v)} saving={saving === chainKey} tag="div" multiline={false} placeholder="Role label…"
+                style={{ fontSize:9, color:'var(--text-muted)', letterSpacing:1, textTransform:'uppercase', marginTop:1 }} />
             </div>
             <div className="coc-name" style={{ display:'flex', flexDirection:'column', justifyContent:'center', minWidth:200 }}>
               <EditableText value={item.name} onSave={v => updateItem(idx, 'name', v)} saving={saving === chainKey} tag="span" multiline={false} placeholder="[ Vacant ]"
                 style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:16, color:'var(--gold-pale)', letterSpacing:2 }} />
               <div style={{ fontSize:8, color:'var(--text-muted)', letterSpacing:1, textTransform:'uppercase', marginTop:2 }}>Username</div>
             </div>
-            <div style={{ padding:'12px 14px', display:'flex', alignItems:'center', gap:6 }}>
-              <span style={{ padding:'2px 8px', fontSize:8, fontWeight:700, letterSpacing:1, textTransform:'uppercase', border:'1px solid', fontFamily:'Rajdhani,sans-serif',
-                borderColor: idx === 0 ? 'var(--gold-dim)' : 'var(--border2)',
-                color: idx === 0 ? 'var(--gold)' : 'var(--text-muted)',
-                background: idx === 0 ? 'rgba(200,149,42,0.08)' : 'transparent' }}>
-                {idx === 0 ? 'CiC' : idx === 1 ? 'Admin' : 'Staff'}
-              </span>
+            <div style={{ padding:'12px 14px', display:'flex', alignItems:'center', gap:4 }}>
               {isStaff && (
-                <button onClick={() => deleteItem(idx)} style={delBtn} title="Delete row">✕</button>
+                <>
+                  <button onClick={() => moveItem(idx, -1)} disabled={idx === 0} title="Move Up" style={{ ...delBtn, fontSize:11, padding:'2px 5px', opacity: idx === 0 ? 0.3 : 1 }}>↑</button>
+                  <button onClick={() => moveItem(idx, 1)} disabled={idx === chain.length - 1} title="Move Down" style={{ ...delBtn, fontSize:11, padding:'2px 5px', opacity: idx === chain.length - 1 ? 0.3 : 1 }}>↓</button>
+                  <button onClick={() => deleteItem(idx)} style={delBtn} title="Delete row">✕</button>
+                </>
               )}
             </div>
           </div>
@@ -523,6 +534,14 @@ export function Command() {
     saveSections(sections.map((s, i) => i === idx ? { ...s, title: newTitle } : s))
   }
 
+  const moveSection = (idx, dir) => {
+    const swapIdx = idx + dir
+    if (swapIdx < 0 || swapIdx >= sections.length) return
+    const updated = [...sections]
+    ;[updated[idx], updated[swapIdx]] = [updated[swapIdx], updated[idx]]
+    saveSections(updated)
+  }
+
   return (
     <>
       <div className="page-wrap">
@@ -552,6 +571,9 @@ export function Command() {
                 content={content} save={save} saving={saving} isStaff={isStaff}
                 onRenameSection={isStaff ? (v) => renameSection(idx, v) : null}
                 onDeleteSection={isStaff && sections.length > 1 ? () => deleteSection(idx) : null}
+                onMoveSection={isStaff ? (dir) => moveSection(idx, dir) : null}
+                isFirst={idx === 0}
+                isLast={idx === sections.length - 1}
               />
             ))}
             {isStaff && (
