@@ -80,20 +80,25 @@ export function Operations() {
             {/* Left: categories + search */}
             <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap', flex:1 }}>
               <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                {CATS.map(c => (
-                  <button key={c} onClick={() => setFilter(c)}
-                    style={{
-                      padding:'5px 14px', fontSize:10, fontWeight:700, letterSpacing:2,
-                      textTransform:'uppercase', cursor:'pointer', border:'1px solid',
-                      fontFamily:'Rajdhani,sans-serif',
-                      background: filter===c ? 'var(--gold)' : 'transparent',
-                      color:      filter===c ? '#090d09'    : 'var(--text-dim)',
-                      borderColor:filter===c ? 'var(--gold)' : 'var(--border2)',
-                      transition:'all 0.15s',
-                    }}>
-                    {c}
-                  </button>
-                ))}
+                {CATS.map(c => {
+                  const catAccent = { mission:'var(--gold)', announcement:'#c06060', news:'#6ab46a' }
+                  const isActive = filter === c
+                  const accent = catAccent[c]
+                  return (
+                    <button key={c} onClick={() => setFilter(c)}
+                      style={{
+                        padding:'5px 14px', fontSize:10, fontWeight:700, letterSpacing:2,
+                        textTransform:'uppercase', cursor:'pointer', border:'1px solid',
+                        fontFamily:'Rajdhani,sans-serif', transition:'all 0.15s',
+                        background:  isActive ? (accent ?? 'var(--gold)') : 'transparent',
+                        color:       isActive ? '#090d09' : (accent ?? 'var(--text-dim)'),
+                        borderColor: isActive ? (accent ?? 'var(--gold)') : (accent ? accent + '55' : 'var(--border2)'),
+                        opacity:     !isActive && c !== 'all' ? 0.7 : 1,
+                      }}>
+                      {c}
+                    </button>
+                  )
+                })}
               </div>
               {/* Search bar */}
               <div style={{ position:'relative', flex:'1', minWidth:180, maxWidth:320 }}>
@@ -150,49 +155,67 @@ export function Operations() {
               {search ? `No posts match "${search}"` : 'No posts yet.'}
             </div>
           ) : (
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(300px, 1fr))', gap:1, background:'var(--border)', border:'1px solid var(--border)' }}>
-              {filtered.map(post => (
-                <Link key={post.id} to={`/operations/${post.slug}`}
-                  className="post-card"
-                  style={{ textDecoration:'none', display:'block', background:'var(--panel)' }}>
-                  <div style={{ padding:'24px 24px 20px', position:'relative' }}>
-                    {isStaff && post.status === 'draft' && (
-                      <span style={{ position:'absolute', top:16, right:16, fontSize:9, fontWeight:700, letterSpacing:2, padding:'2px 8px', border:'1px solid var(--border2)', color:'var(--text-muted)', textTransform:'uppercase' }}>
-                        DRAFT
-                      </span>
-                    )}
-                    <div style={{ fontSize:9, fontWeight:700, letterSpacing:3, color: CAT_COLORS[post.category] ?? 'var(--gold)', textTransform:'uppercase', marginBottom:10 }}>
-                      {post.category}
-                    </div>
-                    <div style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:22, color:'var(--bright)', letterSpacing:2, lineHeight:1.1, marginBottom:10 }}>
-                      {post.title}
-                    </div>
-                    <p style={{ fontFamily:'Source Serif 4,serif', fontSize:13, fontWeight:300, color:'var(--text-dim)', lineHeight:1.7 }}>
-                      {post.excerpt}
-                    </p>
-                    <div style={{ marginTop:14, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-                      <div style={{ fontSize:10, color:'var(--text-muted)', letterSpacing:1 }}>
-                        {new Date(post.created_at).toLocaleDateString('en-PH', { day:'numeric', month:'short', year:'numeric' })}
-                      </div>
-                      <div style={{ display:'flex', gap:8 }}>
-                        {isStaff && (
-                          <>
-                            <span onClick={e => { e.preventDefault(); navigate(`/operations/edit/${post.id}`) }}
-                              style={{ fontSize:10, fontWeight:700, letterSpacing:1, color:'var(--gold-dim)', cursor:'pointer', padding:'2px 8px', border:'1px solid var(--border2)' }}>
-                              EDIT
-                            </span>
-                            <span onClick={e => handleDelete(e, post.id)}
-                              style={{ fontSize:10, fontWeight:700, letterSpacing:1, color:'#c06060', cursor:'pointer', padding:'2px 8px', border:'1px solid rgba(192,96,96,0.3)' }}>
-                              DELETE
-                            </span>
-                          </>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:0, border:'1px solid var(--border)' }}>
+              {filtered.map((post, idx) => {
+                const accent = CAT_COLORS[post.category] ?? 'var(--gold)'
+                const isFeatured = idx === 0 && filter === 'all' && !search
+                return (
+                  <Link key={post.id} to={`/operations/${post.slug}`}
+                    className="post-card"
+                    style={{
+                      textDecoration:'none', display:'block', background:'var(--panel)',
+                      borderRight:'1px solid var(--border)', borderBottom:'1px solid var(--border)',
+                      gridColumn: isFeatured ? '1 / 3' : undefined,
+                      position:'relative',
+                    }}>
+                    {/* Left accent bar */}
+                    <div style={{ position:'absolute', left:0, top:0, bottom:0, width:2, background:accent, opacity:0.7 }} />
+                    <div style={{ padding: isFeatured ? '28px 28px 24px 30px' : '22px 22px 18px 26px', display: isFeatured ? 'grid' : 'block', gridTemplateColumns: isFeatured ? '1fr 1fr' : undefined, gap: isFeatured ? 24 : undefined, alignItems: isFeatured ? 'center' : undefined }}>
+                      {isFeatured && (
+                        <div style={{ background:'linear-gradient(135deg,var(--green) 0%,var(--bg2) 100%)', border:'1px solid var(--border2)', minHeight:120, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                          {post.cover_url
+                            ? <img src={post.cover_url} alt={post.title} style={{ width:'100%', height:120, objectFit:'cover' }}/>
+                            : <span style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:40, color:'rgba(200,149,42,0.12)', letterSpacing:4 }}>OP</span>
+                          }
+                        </div>
+                      )}
+                      <div>
+                        {isStaff && post.status === 'draft' && (
+                          <span style={{ fontSize:9, fontWeight:700, letterSpacing:2, padding:'2px 8px', border:'1px solid var(--border2)', color:'var(--text-muted)', textTransform:'uppercase', marginBottom:8, display:'inline-block' }}>DRAFT</span>
                         )}
-                        <span style={{ fontSize:10, fontWeight:700, letterSpacing:1, color:'var(--gold)' }}>READ →</span>
+                        {/* Category badge */}
+                        <span style={{ display:'inline-block', padding:'2px 8px', fontSize:8, fontWeight:700, letterSpacing:2, textTransform:'uppercase', border:'1px solid', marginBottom:10,
+                          color:accent, borderColor:accent+'66', background:accent==='var(--gold)' ? 'rgba(200,149,42,0.07)' : accent==='#c06060' ? 'rgba(192,96,96,0.07)' : 'rgba(106,180,106,0.07)',
+                          fontFamily:'Rajdhani,sans-serif' }}>
+                          {isFeatured && '✦ Featured · '}{post.category}
+                        </span>
+                        <div style={{ fontFamily:'Bebas Neue,sans-serif', fontSize: isFeatured ? 26 : 20, color:'var(--bright)', letterSpacing:2, lineHeight:1.05, marginBottom:8 }}>
+                          {post.title}
+                        </div>
+                        <p style={{ fontFamily:'Source Serif 4,serif', fontSize:12, fontWeight:300, color:'var(--text-dim)', lineHeight:1.7 }}>
+                          {post.excerpt}
+                        </p>
+                        <div style={{ marginTop:12, display:'flex', alignItems:'center', justifyContent:'space-between', paddingTop:10, borderTop:'1px solid var(--border)' }}>
+                          <div style={{ fontSize:9, color:'var(--text-muted)', letterSpacing:1 }}>
+                            {new Date(post.created_at).toLocaleDateString('en-PH', { day:'numeric', month:'short', year:'numeric' })}
+                          </div>
+                          <div style={{ display:'flex', gap:8 }}>
+                            {isStaff && (
+                              <>
+                                <span onClick={e => { e.preventDefault(); navigate(`/operations/edit/${post.id}`) }}
+                                  style={{ fontSize:9, fontWeight:700, letterSpacing:1, color:'var(--gold-dim)', cursor:'pointer', padding:'2px 8px', border:'1px solid var(--border2)' }}>EDIT</span>
+                                <span onClick={e => handleDelete(e, post.id)}
+                                  style={{ fontSize:9, fontWeight:700, letterSpacing:1, color:'#c06060', cursor:'pointer', padding:'2px 8px', border:'1px solid rgba(192,96,96,0.3)' }}>DELETE</span>
+                              </>
+                            )}
+                            <span style={{ fontSize:9, fontWeight:700, letterSpacing:1, color:accent }}>READ →</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                )
+              })}
             </div>
           )}
         </div>
