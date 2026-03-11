@@ -118,7 +118,7 @@ export default function Home() {
       <section style={heroStyle}>
         <div style={heroBg}/>
         <div style={heroGrid}/>
-        {['tl','tr','bl','br'].map(p => <div key={p} style={cornerStyle(p)}/>)}
+        {['tl','tr','bl','br'].map(p => <div key={p} className="hero-corner" style={cornerStyle(p)}/>)}
 
         <div className="hero-content" style={{ position: 'relative', zIndex: 1, padding: '0 48px', maxWidth: 860 }}>
           <div style={eyebrow}>
@@ -368,5 +368,5 @@ const eyebrow = {
 }
 function cornerStyle(pos) {
   const map = { tl:{top:80,left:48,borderWidth:'2px 0 0 2px'}, tr:{top:80,right:48,borderWidth:'2px 2px 0 0'}, bl:{bottom:40,left:48,borderWidth:'0 0 2px 2px'}, br:{bottom:40,right:48,borderWidth:'0 2px 2px 0'} }
-  return { position: 'absolute', width: 48, height: 48, borderColor: 'var(--gold-dim)', borderStyle: 'solid', opacity: .35, ...map[pos], '@media(max-width:768px)': { display: 'none' } }
+  return { position: 'absolute', width: 48, height: 48, borderColor: 'var(--gold-dim)', borderStyle: 'solid', opacity: .35, ...map[pos] }
 }
