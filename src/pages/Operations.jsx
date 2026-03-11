@@ -155,7 +155,7 @@ export function Operations() {
               {search ? `No posts match "${search}"` : 'No posts yet.'}
             </div>
           ) : (
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:0, border:'1px solid var(--border)' }}>
+            <div className="ops-grid" style={{ gap:0, border:'1px solid var(--border)' }}>
               {filtered.map((post, idx) => {
                 const accent = CAT_COLORS[post.category] ?? 'var(--gold)'
                 const isFeatured = idx === 0 && filter === 'all' && !search
