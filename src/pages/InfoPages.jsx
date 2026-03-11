@@ -183,7 +183,7 @@ export function Brigades() {
         </div>
         <div className="container">
           <div className="content-section">
-            <div className="brigade-cards">
+            <div className="brigade-cards-a">
               {brigadeIds.map(id => {
                 const nk  = `brigade_${id}_num`
                 const ck  = `brigade_${id}_callsign`
@@ -193,22 +193,30 @@ export function Brigades() {
                 const mk  = `brigade_${id}_motto`
                 const imgk = `brigade_${id}_img`
                 return (
-                  <div key={id} className="brigade-card" style={{ position: 'relative' }}>
+                  <div key={id} className="brigade-card-a" style={{ position: 'relative' }}>
                     {isStaff && (
                       <button onClick={() => removeBrigade(id)} style={{ ...delBtn, position: 'absolute', top: 8, right: 8, fontSize: 11, zIndex: 2 }} title={`Remove Brigade ${id}`}>✕ Remove</button>
                     )}
-                    <div className="brigade-tab">
-                      <EditableImage value={content[imgk] ?? ''} onSave={v => save(imgk,v)} alt={'Brigade '+id} height={100} placeholder="Upload brigade image" style={{ marginBottom:8 }} />
-                      <EditableText value={content[nk] ?? id} onSave={v => save(nk,v)} saving={saving===nk} tag="div" multiline={false} placeholder="Brigade number" style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:44, color:'var(--gold-dim)', lineHeight:1 }} />
-                      <EditableText value={content[ck] ?? ''} onSave={v => save(ck,v)} saving={saving===ck} tag="div" multiline={false} placeholder="Callsign…" style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:14, color:'var(--gold)', letterSpacing:2 }} />
-                      <EditableText value={content[rk] ?? ''} onSave={v => save(rk,v)} saving={saving===rk} tag="div" multiline={false} placeholder="Role…" style={{ fontSize:10, color:'var(--text-dim)', letterSpacing:1 }} />
+                    {/* Left panel */}
+                    <div className="brigade-tab-a">
+                      <EditableImage value={content[imgk] ?? ''} onSave={v => save(imgk,v)} alt={'Brigade '+id} height={72} placeholder="Upload" style={{ marginBottom: 8, width: '100%', objectFit: 'cover' }} />
+                      <EditableText value={content[nk] ?? id} onSave={v => save(nk,v)} saving={saving===nk} tag="div" multiline={false} placeholder="No." style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:52, color:'var(--gold)', lineHeight:1, letterSpacing:2, position:'relative', zIndex:1, textShadow:'0 0 30px rgba(200,149,42,0.25)' }} />
+                      <EditableText value={content[ck] ?? ''} onSave={v => save(ck,v)} saving={saving===ck} tag="div" multiline={false} placeholder="Callsign…" style={{ fontSize:8, fontWeight:700, letterSpacing:3, color:'var(--gold-dim)', textTransform:'uppercase', marginTop:4, position:'relative', zIndex:1 }} />
                     </div>
-                    <div className="brigade-body">
-                      <EditableText value={content[dk] ?? ''} onSave={v => save(dk,v)} saving={saving===dk} tag="p" placeholder="Enter brigade description…" style={{ fontFamily:'Source Serif 4,serif', fontSize:14, fontWeight:300, color:'var(--text)', lineHeight:1.8, marginBottom:10 }} />
+                    {/* Right panel */}
+                    <div className="brigade-body-a">
+                      <div style={{ marginBottom: 8 }}>
+                        <EditableText value={content[rk] ?? ''} onSave={v => save(rk,v)} saving={saving===rk} tag="span" multiline={false} placeholder="Role…" style={{ display:'inline-block', fontSize:8, fontWeight:700, letterSpacing:2, color:'var(--gold)', textTransform:'uppercase', padding:'2px 8px', border:'1px solid var(--gold-dim)', background:'rgba(200,149,42,0.05)' }} />
+                      </div>
+                      <EditableText value={content[dk] ?? ''} onSave={v => save(dk,v)} saving={saving===dk} tag="p" placeholder="Enter brigade description…" style={{ fontFamily:'Source Serif 4,serif', fontSize:13.5, fontWeight:300, color:'var(--text)', lineHeight:1.8, marginBottom:10 }} />
                       <EditableText value={content[ek] ?? ''} onSave={v => save(ek,v)} saving={saving===ek} tag="p" multiline={false} placeholder="Companies and arms info…" style={{ fontSize:13, color:'var(--text-dim)', marginBottom:10 }} />
                       <div className="motto">
                         <span className="motto-label">Motto</span>
                         <EditableText value={content[mk] ?? ''} onSave={v => save(mk,v)} saving={saving===mk} tag="span" multiline={false} placeholder="Enter motto…" style={{ fontStyle:'italic' }} />
+                      </div>
+                      <div style={{ marginTop:14, fontSize:9, fontWeight:700, letterSpacing:2, color:'var(--gold)', textTransform:'uppercase', display:'flex', alignItems:'center', gap:6 }}>
+                        <span style={{ flex:1, height:1, background:'linear-gradient(90deg,var(--gold-dim),transparent)' }}/>
+                        View Full Brigade →
                       </div>
                     </div>
                   </div>
@@ -456,13 +464,29 @@ function ChainSection({ title, num, chainKey, content, save, saving, isStaff, on
       </div>
       <div className="coc-list">
         {chain.map((item, idx) => (
-          <div key={idx} className="coc-row" style={{ alignItems: 'center' }}>
-            <div className="coc-num">{idx + 1}</div>
-            <div className="coc-rank" style={{ flex: 1 }}>
-              <EditableText value={item.rank} onSave={v => updateItem(idx, 'rank', v)} saving={saving === chainKey} tag="span" multiline={false} placeholder="Position title…" />
+          <div key={idx} className="coc-row" style={{ alignItems: 'stretch' }}>
+            <div className="coc-num" style={{ display:'flex', alignItems:'center', justifyContent:'center', fontSize: idx === 0 ? 20 : 16, color: idx === 0 ? 'var(--gold)' : 'var(--gold-dim)', fontWeight: idx === 0 ? 700 : 400 }}>
+              {String(idx + 1).padStart(2, '0')}
             </div>
-            <div className="coc-name" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <EditableText value={item.name} onSave={v => updateItem(idx, 'name', v)} saving={saving === chainKey} tag="span" multiline={false} placeholder="[ Vacant ]" />
+            <div className="coc-rank" style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', borderRight:'1px solid var(--border)' }}>
+              <EditableText value={item.rank} onSave={v => updateItem(idx, 'rank', v)} saving={saving === chainKey} tag="span" multiline={false} placeholder="Position title…"
+                style={{ fontSize:13, fontWeight:700, color:'var(--bright)', letterSpacing:0.5 }} />
+              <div style={{ fontSize:9, color:'var(--text-muted)', letterSpacing:1, textTransform:'uppercase', marginTop:1 }}>
+                {idx === 0 ? 'Division Head' : idx === 1 ? 'Division Staff' : 'Brigade Staff'}
+              </div>
+            </div>
+            <div className="coc-name" style={{ display:'flex', flexDirection:'column', justifyContent:'center', minWidth:200 }}>
+              <EditableText value={item.name} onSave={v => updateItem(idx, 'name', v)} saving={saving === chainKey} tag="span" multiline={false} placeholder="[ Vacant ]"
+                style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:16, color:'var(--gold-pale)', letterSpacing:2 }} />
+              <div style={{ fontSize:8, color:'var(--text-muted)', letterSpacing:1, textTransform:'uppercase', marginTop:2 }}>Username</div>
+            </div>
+            <div style={{ padding:'12px 14px', display:'flex', alignItems:'center', gap:6 }}>
+              <span style={{ padding:'2px 8px', fontSize:8, fontWeight:700, letterSpacing:1, textTransform:'uppercase', border:'1px solid', fontFamily:'Rajdhani,sans-serif',
+                borderColor: idx === 0 ? 'var(--gold-dim)' : 'var(--border2)',
+                color: idx === 0 ? 'var(--gold)' : 'var(--text-muted)',
+                background: idx === 0 ? 'rgba(200,149,42,0.08)' : 'transparent' }}>
+                {idx === 0 ? 'CiC' : idx === 1 ? 'Admin' : 'Staff'}
+              </span>
               {isStaff && (
                 <button onClick={() => deleteItem(idx)} style={delBtn} title="Delete row">✕</button>
               )}
