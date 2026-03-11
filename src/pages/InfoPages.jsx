@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import EditableText from '../components/EditableText'
 import EditableImage from '../components/EditableImage'
 import Footer from '../components/Footer'
+import Skeleton from '../components/Skeleton'
 
 function parseJSON(str, def) {
   if (!str) return def
@@ -146,7 +147,7 @@ export function About() {
 const DEFAULT_BRIGADE_IDS = ['101', '102', '104']
 
 export function Brigades() {
-  const { content, save, saving } = useContent('brigades')
+  const { content, save, saving, loading } = useContent('brigades')
   const { isStaff } = useAuth()
 
   const brigadeIds = parseJSON(content.brigade_ids, DEFAULT_BRIGADE_IDS)
@@ -184,6 +185,26 @@ export function Brigades() {
         </div>
         <div className="container">
           <div className="content-section">
+            {loading ? (
+              <div className="brigade-cards-a">
+                {[1,2,3].map(n => (
+                  <div key={n} className="brigade-card-a">
+                    <div className="brigade-tab-a">
+                      <Skeleton width="100%" height={72} style={{ marginBottom: 8 }} />
+                      <Skeleton width={60} height={52} style={{ marginBottom: 6 }} />
+                      <Skeleton width={80} height={10} />
+                    </div>
+                    <div className="brigade-body-a">
+                      <Skeleton width={100} height={14} style={{ marginBottom: 12 }} />
+                      <Skeleton height={13} style={{ marginBottom: 6 }} />
+                      <Skeleton height={13} style={{ marginBottom: 6 }} />
+                      <Skeleton width="70%" height={13} style={{ marginBottom: 16 }} />
+                      <Skeleton width={120} height={10} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
             <div className="brigade-cards-a">
               {brigadeIds.map(id => {
                 const nk  = `brigade_${id}_num`
@@ -227,6 +248,7 @@ export function Brigades() {
             {isStaff && (
               <button onClick={addBrigade} style={{ ...addRowBtn, marginTop: 20 }}>+ Add Brigade</button>
             )}
+            </> )}
           </div>
         </div>
       </div>
@@ -513,7 +535,7 @@ function ChainSection({ title, num, chainKey, content, save, saving, isStaff, on
 }
 
 export function Command() {
-  const { content, save, saving } = useContent('command')
+  const { content, save, saving, loading } = useContent('command')
   const { isStaff } = useAuth()
 
   const sections = parseJSON(content.command_sections, DEFAULT_COMMAND_SECTIONS)
@@ -562,6 +584,28 @@ export function Command() {
         </div>
         <div className="container">
           <div className="content-section">
+            {loading ? (
+              <div>
+                {[1,2].map(n => (
+                  <div key={n} style={{ marginTop: n > 1 ? 48 : 0 }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
+                      <Skeleton width={40} height={14} />
+                      <Skeleton width={220} height={14} />
+                    </div>
+                    <div className="coc-list">
+                      {[1,2,3,4].map(r => (
+                        <div key={r} className="coc-row" style={{ padding:'14px 16px', gap:16 }}>
+                          <Skeleton width={28} height={18} />
+                          <Skeleton width="40%" height={13} />
+                          <Skeleton width="25%" height={13} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <>
             {sections.map((sec, idx) => (
               <ChainSection
                 key={sec.chainKey}
@@ -578,6 +622,8 @@ export function Command() {
             ))}
             {isStaff && (
               <button onClick={addSection} style={{ ...addRowBtn, marginTop: 32 }}>+ Add Section</button>
+            )}
+              </>
             )}
           </div>
         </div>
