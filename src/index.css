@@ -284,8 +284,10 @@ textarea, input { font-family: inherit; }
   .data-table td:last-child { border-bottom: none; }
   .data-table td::before { content: attr(data-label); display: block; font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 4px; }
   .coc-row { flex-wrap: wrap; }
-  .coc-rank { min-width: 0; flex: 1 1 60%; }
-  .coc-name { min-width: 0; flex: 1 1 100%; padding-top: 0; border-right: none; }
+  .coc-num { width: 36px; min-width: 36px; font-size: 14px; }
+  .coc-rank { min-width: 0; flex: 1 1 60%; border-right: none; border-bottom: 1px solid var(--border); }
+  .coc-name { min-width: 0; flex: 1 1 100%; padding-top: 8px; padding-bottom: 8px; border-right: none; border-bottom: 1px solid var(--border); }
+  .coc-name:last-child { border-bottom: none; }
   .footer-grid { grid-template-columns: 1fr; gap: 20px; }
   .page-hero-row { flex-direction: column; }
   .page-hero-meta { text-align: left; }
@@ -491,7 +493,7 @@ textarea, input { font-family: inherit; }
 
 /* On desktop, page-wrap needs extra top padding to clear breadcrumb */
 @media (min-width: 769px) {
-  .page-wrap { padding-top: calc(var(--nav-h) + 28px); }
+  .page-wrap { padding-top: calc(var(--nav-h) + 34px); }
 }
 
 /* Command palette "/ QUICK NAV" hint — hide on touch devices */
@@ -551,8 +553,9 @@ textarea, input { font-family: inherit; }
   .data-table td[data-label]::before { content: attr(data-label); font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--gold-dim); text-transform: uppercase; min-width: 80px; flex-shrink: 0; }
 
   .coc-row { flex-wrap: wrap; }
-  .coc-rank { min-width: 0; }
-  .coc-name { min-width: 0; }
+  .coc-num { width: 36px; min-width: 36px; font-size: 14px; }
+  .coc-rank { min-width: 0; flex: 1 1 60%; border-right: none; border-bottom: 1px solid var(--border); }
+  .coc-name { min-width: 0; flex: 1 1 100%; padding-top: 8px; padding-bottom: 8px; }
 
   .nav-links-desktop { display: none !important; }
   .nav-hamburger { display: flex !important; }
