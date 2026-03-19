@@ -65,6 +65,11 @@ a { color: inherit; text-decoration: none; }
 button { font-family: inherit; }
 textarea, input { font-family: inherit; }
 
+/* ── Hero content responsive ──────────────────── */
+.hero-content {
+  padding: 0 48px !important;
+}
+
 /* ── Typography ──────────────────────────────── */
 .bebas { font-family: 'Bebas Neue', sans-serif; }
 .serif { font-family: 'Source Serif 4', serif; }
@@ -451,6 +456,11 @@ textarea, input { font-family: inherit; }
   .page-hero-title { font-size: 32px !important; }
   .home-quick-grid  { grid-template-columns: 1fr 1fr !important; }
   .home-gallery-grid { grid-template-columns: 1fr !important; }
+  .hero-content { padding: 0 16px !important; }
+}
+
+@media (max-width: 768px) {
+  .hero-content { padding: 0 20px !important; }
 }
 
 /* ── Navbar hamburger hidden by default ──────── */

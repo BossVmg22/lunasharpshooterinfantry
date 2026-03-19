@@ -138,7 +138,7 @@ export default function Home() {
           <span style={{ fontSize: 11, color: 'var(--gold-dim)', animation: 'lsi-bounce 1.8s ease-in-out infinite' }}>↓</span>
         </div>
 
-        <div className="hero-content" style={{ position: 'relative', zIndex: 1, padding: '0 48px', maxWidth: 860 }}>
+        <div className="hero-content" style={{ position: 'relative', zIndex: 1, padding: '0 48px', maxWidth: 860 }} className="hero-content">
           <div style={eyebrow}>
             <span style={{ width: 24, height: 1, background: 'var(--gold)', display: 'inline-block' }} />
             <EditableText value={content.hero_eyebrow ?? 'Official Division Portal'} onSave={v => save('hero_eyebrow', v)} saving={saving === 'hero_eyebrow'} tag="span" multiline={false} />
