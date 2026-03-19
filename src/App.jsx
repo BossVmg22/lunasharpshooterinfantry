@@ -1,12 +1,6 @@
-/* ═══════════════════════════════════════════════════════════════════
-   FIXED App.jsx - Update LSI 101 v2
-   Removed duplicate BackToTop (ScrollProgress now handles it)
-═══════════════════════════════════════════════════════════════════ */
-
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import { LightboxProvider } from './contexts/LightboxContext'
-import { ToastProvider } from './ToastNotifications'
 import ErrorBoundary from './ErrorBoundary'
 import TacticalCursor from './TacticalCursor'
 import ScrollProgress from './ScrollProgress'
@@ -43,7 +37,7 @@ function NotFound() {
         <div style={{ fontFamily: 'Source Serif 4, serif', fontSize: 14, color: 'var(--text-dim)', fontStyle: 'italic', marginBottom: 32, maxWidth: 360, margin: '0 auto 32px' }}>
           The page you're looking for doesn't exist or has been moved.
         </div>
-        <Link to="/" style={{ textDecoration: 'none' }}>
+        <Link to="/">
           <button style={{
             background: 'var(--gold)', color: '#090d09', border: 'none',
             padding: '12px 32px', fontFamily: 'Rajdhani, sans-serif',
@@ -53,22 +47,15 @@ function NotFound() {
             ← Back to Home
           </button>
         </Link>
-        <div style={{ marginTop: 48, display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap' }}>
-          {[['About', '/about'], ['Brigades', '/brigades'], ['Gallery', '/gallery'], ['Operations', '/operations']].map(([label, to]) => (
-            <Link key={to} to={to} style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--text-muted)', textDecoration: 'none', textTransform: 'uppercase' }}>
-              {label}
-            </Link>
-          ))}
-        </div>
       </div>
     </div>
   )
 }
 
-export default function App() {
+function AppContent() {
   return (
-    <ErrorBoundary>
-      <ToastProvider>
+    <>
+      <ErrorBoundary>
         <AuthProvider>
           <LightboxProvider>
             <BrowserRouter>
@@ -102,7 +89,11 @@ export default function App() {
             </BrowserRouter>
           </LightboxProvider>
         </AuthProvider>
-      </ToastProvider>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </>
   )
+}
+
+export default function App() {
+  return <AppContent />
 }
