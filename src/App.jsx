@@ -8,6 +8,8 @@ import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
 import CommandPalette from './components/CommandPalette'
 import Breadcrumb from './components/Breadcrumb'
+import PageTransition from './PageTransition'
+import ScrollToTop from './ScrollToTop'
 
 import Home    from './pages/Home'
 import Login   from './pages/Login'
@@ -64,26 +66,29 @@ function AppContent() {
               <Breadcrumb />
               <CommandPalette />
               
-              <Routes>
-                <Route path="/"         element={<Home />} />
-                <Route path="/about"    element={<About />} />
-                <Route path="/brigades" element={<Brigades />} />
-                <Route path="/brigades/:id" element={<BrigadePageKeyed />} />
-                <Route path="/academy"  element={<Academy />} />
-                <Route path="/command"  element={<Command />} />
-                <Route path="/schedule" element={<Schedule />} />
-                <Route path="/login"    element={<Login />} />
-                <Route path="/gallery"  element={<Gallery />} />
-                <Route path="/operations"          element={<Operations />} />
-                <Route path="/operations/new"      element={<ProtectedRoute require="staff"><PostEditor /></ProtectedRoute>} />
-                <Route path="/operations/edit/:id" element={<ProtectedRoute require="staff"><PostEditor /></ProtectedRoute>} />
-                <Route path="/operations/:slug"    element={<PostDetail />} />
-                <Route path="/manuals/pi"       element={<ProtectedRoute><PIManual /></ProtectedRoute>} />
-                <Route path="/manuals/handbook" element={<ProtectedRoute><Handbook /></ProtectedRoute>} />
-                <Route path="/manuals/uniforms" element={<ProtectedRoute><Uniforms /></ProtectedRoute>} />
-                <Route path="/admin" element={<ProtectedRoute require="admin"><Admin /></ProtectedRoute>} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <ScrollToTop />
+              <PageTransition>
+                <Routes>
+                  <Route path="/"         element={<Home />} />
+                  <Route path="/about"    element={<About />} />
+                  <Route path="/brigades" element={<Brigades />} />
+                  <Route path="/brigades/:id" element={<BrigadePageKeyed />} />
+                  <Route path="/academy"  element={<Academy />} />
+                  <Route path="/command"  element={<Command />} />
+                  <Route path="/schedule" element={<Schedule />} />
+                  <Route path="/login"    element={<Login />} />
+                  <Route path="/gallery"  element={<Gallery />} />
+                  <Route path="/operations"          element={<Operations />} />
+                  <Route path="/operations/new"      element={<ProtectedRoute require="staff"><PostEditor /></ProtectedRoute>} />
+                  <Route path="/operations/edit/:id" element={<ProtectedRoute require="staff"><PostEditor /></ProtectedRoute>} />
+                  <Route path="/operations/:slug"    element={<PostDetail />} />
+                  <Route path="/manuals/pi"       element={<ProtectedRoute><PIManual /></ProtectedRoute>} />
+                  <Route path="/manuals/handbook" element={<ProtectedRoute><Handbook /></ProtectedRoute>} />
+                  <Route path="/manuals/uniforms" element={<ProtectedRoute><Uniforms /></ProtectedRoute>} />
+                  <Route path="/admin" element={<ProtectedRoute require="admin"><Admin /></ProtectedRoute>} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </PageTransition>
             </BrowserRouter>
           </LightboxProvider>
         </AuthProvider>
