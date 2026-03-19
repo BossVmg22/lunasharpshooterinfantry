@@ -1,0 +1,14 @@
+{
+  "name": "Luna Sharpshooters Infantry",
+  "short_name": "LSI",
+  "description": "Official portal of the Luna Sharpshooters Infantry Division",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090d09",
+  "theme_color": "#090d09",
+  "orientation": "any",
+  "icons": [
+    { "src": "/web-app-manifest-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/web-app-manifest-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
