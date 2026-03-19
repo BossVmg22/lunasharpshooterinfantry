@@ -146,9 +146,9 @@ export default function Home() {
           <EditableText value={content.hero_sub ?? 'Luna Sharpshooter Infantry'} onSave={v => save('hero_sub', v)} saving={saving === 'hero_sub'} tag="p" multiline={false}
             style={{ fontFamily: 'Source Serif 4,serif', fontSize: 18, fontWeight: 300, color: 'var(--text-dim)', letterSpacing: 1, marginBottom: 4 }} />
 
-          <h1 style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 'clamp(72px,11vw,130px)', letterSpacing: 5, color: 'var(--bright)', lineHeight: .84, marginBottom: 16 }}>
-            <EditableText value={content.hero_title_1 ?? 'SHARP'} onSave={v => save('hero_title_1', v)} saving={saving === 'hero_title_1'} tag="span" multiline={false} />
-            <EditableText value={content.hero_title_2 ?? 'SHOOTERS'} onSave={v => save('hero_title_2', v)} saving={saving === 'hero_title_2'} tag="span" multiline={false} style={{ color: 'var(--gold)', display: 'block', textShadow: '0 0 60px rgba(200,149,42,0.3)' }} />
+          <h1 className="hero-title">
+            <EditableText value={content.hero_title_1 ?? 'LUNA'} onSave={v => save('hero_title_1', v)} saving={saving === 'hero_title_1'} tag="span" multiline={false} />
+            <EditableText value={content.hero_title_2 ?? 'SHARPSHOOTER'} onSave={v => save('hero_title_2', v)} saving={saving === 'hero_title_2'} tag="span" multiline={false} style={{ color: 'var(--gold)', display: 'block', textShadow: '0 0 60px rgba(200,149,42,0.3)' }} />
           </h1>
 
           {/* Diamond divider */}
