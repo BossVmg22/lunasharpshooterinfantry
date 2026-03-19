@@ -4,7 +4,6 @@ import { LightboxProvider } from './contexts/LightboxContext'
 import ErrorBoundary from './ErrorBoundary'
 import TacticalCursor from './TacticalCursor'
 import ScrollProgress from './ScrollProgress'
-import MilitaryStatusBar from './MilitaryStatusBar'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
 import CommandPalette from './components/CommandPalette'
@@ -62,7 +61,6 @@ function AppContent() {
               <TacticalCursor />
               <ScrollProgress />
               <Navbar />
-              <MilitaryStatusBar />
               <Breadcrumb />
               <CommandPalette />
               

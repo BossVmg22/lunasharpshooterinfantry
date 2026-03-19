@@ -438,7 +438,7 @@ textarea, input { font-family: inherit; }
   .ops-grid .post-card { grid-column: 1 / -1 !important; }
   .nav-links-desktop { display: none !important; }
   .nav-hamburger { display: flex !important; }
-  .page-hero { padding: 28px 0 20px; }
+  .page-hero { padding: 28px 16px 20px; }
   .page-hero-title { font-size: clamp(28px, 8vw, 48px) !important; }
   .container > div[style*="padding"] {
     padding-left: 0 !important;

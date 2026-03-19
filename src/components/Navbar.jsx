@@ -183,6 +183,8 @@ export default function Navbar() {
           position: fixed; bottom: 0; left: 0; right: 0; height: var(--bottom-nav-h);
           background: rgba(9,13,9,0.98); border-top: 1px solid var(--border);
           z-index: 1000; align-items: stretch;
+          padding: 0 8px;
+          box-sizing: border-box;
         }
         .lsi-bottom-tab {
           flex: 1; display: flex; flex-direction: column;
@@ -191,7 +193,7 @@ export default function Navbar() {
           font-size: 9px; font-weight: 700; letter-spacing: 1px;
           text-transform: uppercase; font-family: 'Rajdhani', sans-serif;
           border: none; background: none; cursor: pointer;
-          transition: color 0.15s; padding: 0;
+          transition: color 0.15s; padding: 4px;
         }
         .lsi-bottom-tab.active { color: var(--gold); }
         .lsi-bottom-tab .tab-icon { font-size: 18px; line-height: 1; }
@@ -202,15 +204,17 @@ export default function Navbar() {
           position: fixed; bottom: var(--bottom-nav-h); left: 0; right: 0;
           background: var(--bg2); border-top: 2px solid var(--gold-dim);
           z-index: 999; max-height: 70vh; overflow-y: auto;
+          padding: 0 16px;
+          box-sizing: border-box;
         }
         .lsi-more-drawer.open { display: block; }
         .lsi-drawer-link {
-          display: block; padding: 13px 20px;
+          display: block; padding: 13px 0;
           font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
           color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border);
         }
         .lsi-drawer-sublink {
-          display: block; padding: 10px 20px 10px 36px;
+          display: block; padding: 10px 0 10px 16px;
           font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
           color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--border);
         }
