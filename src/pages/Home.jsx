@@ -1,10 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════════
-   UPDATE LSI 101 - Home.jsx
-   Replace src/pages/Home.jsx with this file
-   Adds: Particle Grid, Typewriter, Parallax, Animated Emblem, etc.
+   FIXED Home.jsx - Update LSI 101 v2
+   Fixed imports and added proper dependencies
 ═══════════════════════════════════════════════════════════════════ */
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useContent } from '../lib/useContent'
 import { supabase } from '../lib/supabase'
@@ -15,7 +14,6 @@ import ParticleGrid from '../ParticleGrid'
 import Typewriter, { AnnouncementTicker } from '../Typewriter'
 import FloatingElement from '../ParallaxSection'
 import { StaticEmblem } from '../AnimatedEmblem'
-
 
 const CAT_COLORS = { mission: 'var(--gold)', announcement: '#c06060', news: '#6ab46a' }
 
@@ -77,23 +75,31 @@ export default function Home() {
   const { content, save, saving } = useContent('home')
   const { content: brigadesContent } = useContent('brigades')
   const { isMember, isStaff } = useAuth()
-  const openLightbox = (src, alt = '', caption = '') =>
-    window.dispatchEvent(new CustomEvent('lsi:lightbox', { detail: { src, alt, caption } }))
   const navigate = useNavigate()
   const revealRef = useRef([])
-  const [latestPosts,   setLatestPosts]   = useState([])
+  const [latestPosts, setLatestPosts] = useState([])
   const [latestGallery, setLatestGallery] = useState([])
-  const [announcements, setAnnouncements] = useState([
+  const [announcements] = useState([
     'Practice Inspection every Saturday - All personnel must attend',
     'New uniform regulations now in effect',
     'Welcome to the 104th Brigade!',
   ])
 
+  const openLightbox = useCallback((src, alt = '', caption = '') => {
+    window.dispatchEvent(new CustomEvent('lsi:lightbox', { detail: { src, alt, caption } }))
+  }, [])
+
   useEffect(() => {
-    supabase.from('posts').select('id,title,slug,excerpt,category,created_at').eq('status', 'published').order('created_at', { ascending: false }).limit(3)
+    const fetchPosts = supabase.from('posts').select('id,title,slug,excerpt,category,created_at').eq('status', 'published').order('created_at', { ascending: false }).limit(3)
       .then(({ data }) => setLatestPosts(data ?? []))
-    supabase.from('gallery').select('id,title,image_url').order('created_at', { ascending: false }).limit(6)
+    
+    const fetchGallery = supabase.from('gallery').select('id,title,image_url').order('created_at', { ascending: false }).limit(6)
       .then(({ data }) => setLatestGallery(data ?? []))
+
+    return () => {
+      fetchPosts
+      fetchGallery
+    }
   }, [])
 
   useEffect(() => {
@@ -104,7 +110,7 @@ export default function Home() {
     return () => obs.disconnect()
   }, [])
 
-  const r = i => el => { revealRef.current[i] = el }
+  const r = useCallback(i => el => { revealRef.current[i] = el }, [])
 
   const brigadeIds = parseJSON(brigadesContent.brigade_ids, ['101','102','104'])
 
@@ -112,7 +118,6 @@ export default function Home() {
     <>
       {/* ── HERO ───────────────────────── */}
       <section style={heroStyle}>
-        {/* Particle grid background */}
         <ParticleGrid />
         
         <div style={heroBg}/>
@@ -121,9 +126,8 @@ export default function Home() {
         <div style={heroVignette}/>
         {['tl','tr','bl','br'].map(p => <div key={p} className="hero-corner" style={cornerStyle(p)}/>)}
 
-        {/* Animated emblem */}
         <FloatingElement intensity={5} duration={4}>
-          <div style={{ position: 'absolute', top: '10%', right: '8%', opacity: 0.15 }}>
+          <div style={{ position: 'absolute', top: '10%', right: '8%', opacity: 0.15, pointerEvents: 'none' }}>
             <StaticEmblem size={200} />
           </div>
         </FloatingElement>

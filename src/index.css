@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════
-   UPDATE LSI 101 - ENHANCED CSS
-   Replace src/index.css with this file
+   FIXED index.css - Update LSI 101 v2
+   Fixed z-index conflicts, cursor issues, performance
 ═══════════════════════════════════════════════════════════════════ */
 
 :root {
@@ -40,12 +40,13 @@ body {
   overflow-x: hidden;
   max-width: 100vw;
   width: 100%;
-  cursor: none;
 }
 
-/* Hide default cursor on desktop */
+/* Desktop: hide default cursor for tactical cursor */
 @media (pointer: fine) {
-  * { cursor: none !important; }
+  a, button, [role="button"] {
+    cursor: pointer;
+  }
 }
 
 /* Scanlines */
@@ -60,7 +61,7 @@ body::before {
   z-index: 9999;
 }
 
-a { color: inherit; text-decoration: none; cursor: none; }
+a { color: inherit; text-decoration: none; }
 button { font-family: inherit; }
 textarea, input { font-family: inherit; }
 
@@ -69,7 +70,7 @@ textarea, input { font-family: inherit; }
 .serif { font-family: 'Source Serif 4', serif; }
 
 /* ── Page shell ──────────────────────────────── */
-.page-wrap { padding-top: var(--nav-h); min-height: 100vh; }
+.page-wrap { padding-top: calc(var(--nav-h) + 32px); min-height: 100vh; }
 .container  { max-width: 1100px; margin: 0 auto; padding: 0 40px; width: 100%; }
 
 /* ── Page hero ───────────────────────────────── */
@@ -153,7 +154,7 @@ textarea, input { font-family: inherit; }
 .info-card h4 { font-size: 15px; font-weight: 700; color: var(--bright); margin-bottom: 6px; }
 .info-card p, .info-card .body-text { font-family: 'Source Serif 4', serif; font-size: 14px; font-weight: 300; color: var(--text); line-height: 1.8; }
 
-/* ── Brigade cards (Option A — horizontal split) ─────────── */
+/* ── Brigade cards ─────────── */
 .brigade-cards-a { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); }
 .brigade-card-a {
   background: var(--panel); display: grid; grid-template-columns: 140px 1fr;
@@ -162,7 +163,6 @@ textarea, input { font-family: inherit; }
 .brigade-card-a:hover {
   box-shadow: 0 0 0 1px var(--gold-dim), 0 4px 24px rgba(200,149,42,0.12);
   transform: translateY(-2px);
-  z-index: 1;
 }
 .brigade-tab-a {
   background: linear-gradient(160deg, var(--green-mid) 0%, var(--green) 100%);
@@ -234,8 +234,6 @@ textarea, input { font-family: inherit; }
 .btn-ghost-gold { padding: 11px 24px; background: rgba(200,149,42,0.04); color: var(--gold); border: 1px solid var(--gold-dim); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
 .btn-ghost-gold:hover { background: rgba(200,149,42,0.1); border-color: var(--gold); }
 
-/* ── Page hero left gold accent bar ────────────────────── */
-
 /* ── Data table ──────────────────────────────── */
 .data-table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); margin: 14px 0; }
 .data-table thead tr { background: var(--green); }
@@ -265,15 +263,6 @@ textarea, input { font-family: inherit; }
 .pi-step-body { padding: 16px 22px; }
 .pi-step-title { font-size: 14px; font-weight: 700; color: var(--bright); margin-bottom: 4px; }
 .pi-step-desc  { font-family: 'Source Serif 4', serif; font-size: 13.5px; font-weight: 300; color: var(--text); line-height: 1.7; }
-
-/* ── CoC rows ────────────────────────────────── */
-.coc-list  { border: 1px solid var(--border); }
-.coc-row   { display: flex; align-items: stretch; border-bottom: 1px solid var(--border); transition: all 0.15s ease; }
-.coc-row:last-child { border-bottom: none; }
-.coc-row:hover { background: rgba(200,149,42,0.03); }
-.coc-num   { width: 44px; min-width: 44px; font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--gold-dim); text-align: center; padding: 13px 0; border-right: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
-.coc-rank  { flex: 1; padding: 13px 16px; font-size: 13px; font-weight: 600; color: var(--text); border-right: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; }
-.coc-name  { padding: 13px 16px; font-family: 'Source Serif 4', serif; font-size: 13.5px; color: var(--gold-pale); font-style: italic; min-width: 180px; display: flex; flex-direction: column; justify-content: center; }
 
 /* ── Stat blocks ─────────────────────────────── */
 .stat-block {
@@ -350,10 +339,6 @@ textarea, input { font-family: inherit; }
 }
 .hero-corner:hover { opacity: 0.7; }
 
-.hero-content {
-  transition: transform 0.1s ease;
-}
-
 /* ── Post cards ──────────────────────────────── */
 .post-card {
   transition: all 0.25s ease;
@@ -375,9 +360,7 @@ textarea, input { font-family: inherit; }
 }
 .gallery-item img { cursor: zoom-in; }
 
-/* ═══════════════════════════════════════════════
-   SKELETON LOADING ANIMATION
-═══════════════════════════════════════════════ */
+/* ── Skeleton loading ─────────────────────────── */
 @keyframes lsi-shimmer {
   0%   { background-position: -600px 0; }
   100% { background-position: 600px 0; }
@@ -413,9 +396,6 @@ textarea, input { font-family: inherit; }
 ═══════════════════════════════════════════════ */
 @media (max-width: 768px) {
   .container { padding: 0 16px; width: 100%; max-width: 100vw; overflow-x: hidden; }
-  body { cursor: auto; }
-  a, button { cursor: pointer; }
-  * { cursor: auto !important; }
 
   .info-grid, .info-grid.cols3 { grid-template-columns: 1fr; }
   .info-card.full { grid-column: 1; }
@@ -449,8 +429,8 @@ textarea, input { font-family: inherit; }
   .home-brigade-grid { grid-template-columns: 1fr !important; }
   .home-gallery-grid { grid-template-columns: 1fr 1fr !important; }
   .home-ops-grid    { grid-template-columns: 1fr !important; }
-  .page-wrap { padding-top: var(--nav-h); }
-  body.staff-mode .page-wrap { padding-top: calc(var(--nav-h) + 28px); }
+  .page-wrap { padding-top: calc(var(--nav-h) + 32px); }
+  body.staff-mode .page-wrap { padding-top: calc(var(--nav-h) + 60px); }
   .nav-username-pill { display: none; }
   .section-label { gap: 8px; }
   .section-label-title { font-size: 20px; }
@@ -476,16 +456,14 @@ textarea, input { font-family: inherit; }
 /* ── Navbar hamburger hidden by default ──────── */
 .nav-hamburger { display: none; }
 
-/* ═══════════════════════════════════════════════
-   DESKTOP ENHANCEMENTS
-═══════════════════════════════════════════════ */
+/* ── Desktop enhancements ────────────────────── */
 @media (max-width: 768px) {
   .breadcrumb-desktop { display: none !important; }
   .desktop-only { display: none !important; }
 }
 
 @media (min-width: 769px) {
-  .page-wrap { padding-top: calc(var(--nav-h) + 34px); }
+  .page-wrap { padding-top: calc(var(--nav-h) + 32px); }
 }
 
 @media (hover: none) {
@@ -495,11 +473,7 @@ textarea, input { font-family: inherit; }
 /* Gallery items — consistent zoom cursor */
 .gallery-item img { cursor: zoom-in; }
 
-/* ═══════════════════════════════════════════════
-   NEW ENHANCEMENTS - UPDATE LSI 101
-═══════════════════════════════════════════════ */
-
-/* Glow effects */
+/* ── Glow effects ───────────────────────────── */
 .glow-gold {
   box-shadow: 0 0 20px rgba(200, 149, 42, 0.3);
 }
@@ -507,7 +481,7 @@ textarea, input { font-family: inherit; }
   text-shadow: 0 0 20px rgba(200, 149, 42, 0.5);
 }
 
-/* Card hover lift */
+/* ── Card hover lift ──────────────────────────── */
 .card-lift {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
@@ -516,14 +490,14 @@ textarea, input { font-family: inherit; }
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
 }
 
-/* Pulse animation */
+/* ── Pulse animation ─────────────────────────── */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
 .pulse { animation: pulse 2s ease-in-out infinite; }
 
-/* Fade in animation */
+/* ── Fade in animation ────────────────────────── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -532,20 +506,13 @@ textarea, input { font-family: inherit; }
   animation: fadeIn 0.4s ease forwards;
 }
 
-/* Staggered animations */
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
-.stagger-5 { animation-delay: 0.5s; }
-
-/* Focus states for accessibility */
+/* ── Focus states for accessibility ───────────── */
 *:focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 
-/* Smooth transitions */
+/* ── Smooth transitions ────────────────────────── */
 .smooth-transition {
   transition: all 0.3s ease;
 }

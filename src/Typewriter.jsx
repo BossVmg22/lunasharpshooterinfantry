@@ -1,7 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+/* ═══════════════════════════════════════════════════════════════════
+   FIXED Typewriter.jsx - Update LSI 101 v2
+   Fixed infinite loop and memory leak issues
+   Added proper cleanup
+═══════════════════════════════════════════════════════════════════ */
+
+import { useState, useEffect, useRef, useCallback } from 'react'
 
 export default function Typewriter({
-  text,
+  text = '',
   speed = 50,
   delay = 0,
   cursor = true,
@@ -14,51 +20,85 @@ export default function Typewriter({
   const [displayText, setDisplayText] = useState('')
   const [isDeleting, setIsDeleting] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
+  const [started, setStarted] = useState(false)
   const indexRef = useRef(0)
+  const timeoutRef = useRef(null)
+
+  const clearTimeout = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+  }, [])
 
   useEffect(() => {
-    let timeout
+    if (delay > 0) {
+      timeoutRef.current = setTimeout(() => {
+        setStarted(true)
+      }, delay)
+    } else {
+      setStarted(true)
+    }
 
-    const startTimeout = setTimeout(() => {
+    return clearTimeout
+  }, [delay, clearTimeout])
+
+  useEffect(() => {
+    if (!started || !text) return
+
+    clearTimeout()
+
+    const type = () => {
       if (isPaused) {
-        setIsPaused(false)
-        setIsDeleting(true)
+        timeoutRef.current = setTimeout(() => {
+          setIsPaused(false)
+          setIsDeleting(true)
+        }, loopDelay)
         return
       }
 
       if (isDeleting) {
         if (displayText.length > 0) {
-          timeout = setTimeout(() => {
+          timeoutRef.current = setTimeout(() => {
             setDisplayText(displayText.slice(0, -1))
           }, speed / 2)
         } else {
           setIsDeleting(false)
           if (loop) {
             setIsPaused(true)
-            setTimeout(() => {}, loopDelay)
+            indexRef.current = 0
           }
         }
       } else {
         if (indexRef.current < text.length) {
-          timeout = setTimeout(() => {
-            setDisplayText(text.slice(0, indexRef.current + 1))
+          timeoutRef.current = setTimeout(() => {
+            const newText = text.slice(0, indexRef.current + 1)
+            setDisplayText(newText)
             indexRef.current++
           }, speed)
         } else if (loop) {
-          setIsPaused(true)
+          timeoutRef.current = setTimeout(() => {
+            setIsPaused(true)
+          }, loopDelay)
         }
       }
-    }, isPaused ? loopDelay : speed)
+    }
 
-    return () => clearTimeout(timeout)
-  }, [displayText, isDeleting, isPaused, text, speed, loop, loopDelay])
+    timeoutRef.current = setTimeout(type, started ? speed : 0)
 
-  const handleReset = () => {
+    return clearTimeout
+  }, [displayText, isDeleting, isPaused, text, speed, loop, loopDelay, started, clearTimeout])
+
+  useEffect(() => {
+    return clearTimeout
+  }, [clearTimeout])
+
+  const handleReset = useCallback(() => {
     setDisplayText('')
     indexRef.current = 0
     setIsDeleting(false)
     setIsPaused(false)
-  }
+  }, [])
 
   return (
     <span className={className} style={style}>
@@ -87,20 +127,34 @@ export default function Typewriter({
 export function AnnouncementTicker({ items = [], interval = 5000 }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isVisible, setIsVisible] = useState(true)
+  const [displayText, setDisplayText] = useState('')
+  const timeoutRef = useRef(null)
+  const intervalRef = useRef(null)
 
   useEffect(() => {
-    if (items.length <= 1) return
+    if (items.length === 0) return
+    
+    setDisplayText(items[currentIndex] || '')
 
-    const intervalId = setInterval(() => {
+    const rotateAnnouncement = () => {
       setIsVisible(false)
-      setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % items.length)
+      timeoutRef.current = setTimeout(() => {
+        setCurrentIndex(prev => (prev + 1) % items.length)
         setIsVisible(true)
       }, 300)
-    }, interval)
+    }
 
-    return () => clearInterval(intervalId)
+    intervalRef.current = setInterval(rotateAnnouncement, interval)
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
   }, [items.length, interval])
+
+  useEffect(() => {
+    setDisplayText(items[currentIndex] || '')
+  }, [currentIndex, items])
 
   if (items.length === 0) return null
 
@@ -155,8 +209,14 @@ export function AnnouncementTicker({ items = [], interval = 5000 }) {
           transition: 'opacity 0.3s ease, transform 0.3s ease',
         }}
       >
-        {items[currentIndex]}
+        {displayText}
       </span>
+      <style>{`
+        @keyframes blink {
+          0%, 50% { opacity: 1; }
+          51%, 100% { opacity: 0; }
+        }
+      `}</style>
     </div>
   )
 }

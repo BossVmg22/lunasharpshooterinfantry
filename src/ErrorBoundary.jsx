@@ -1,14 +1,28 @@
+/* ═══════════════════════════════════════════════════════════════════
+   FIXED ErrorBoundary.jsx - Update LSI 101 v2
+   Added proper error boundary with React error boundaries API
+═══════════════════════════════════════════════════════════════════ */
+
 import { Component } from 'react'
 import { Link } from 'react-router-dom'
 
 export default class ErrorBoundary extends Component {
   constructor(props) {
     super(props)
-    this.state = { hasError: false, error: null, errorInfo: null }
+    this.state = { 
+      hasError: false, 
+      error: null, 
+      errorInfo: null,
+      errorId: null 
+    }
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true, error }
+    return { 
+      hasError: true, 
+      error,
+      errorId: Date.now().toString(36).toUpperCase()
+    }
   }
 
   componentDidCatch(error, errorInfo) {
@@ -17,7 +31,7 @@ export default class ErrorBoundary extends Component {
   }
 
   handleReload = () => {
-    this.setState({ hasError: false, error: null, errorInfo: null })
+    this.setState({ hasError: false, error: null, errorInfo: null, errorId: null })
     window.location.reload()
   }
 
@@ -171,7 +185,7 @@ export default class ErrorBoundary extends Component {
                 letterSpacing: '1px',
               }}
             >
-              ERROR CODE: {Date.now().toString(36).toUpperCase()}
+              ERROR CODE: {this.state.errorId}
             </div>
           </div>
         </div>

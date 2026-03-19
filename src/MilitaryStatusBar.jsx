@@ -1,3 +1,9 @@
+/* ═══════════════════════════════════════════════════════════════════
+   FIXED MilitaryStatusBar.jsx - Update LSI 101 v2
+   Fixed z-index to work with navbar (nav height = 56px)
+   Optimized ticker animation
+═══════════════════════════════════════════════════════════════════ */
+
 import { useState, useEffect } from 'react'
 
 export default function MilitaryStatusBar() {
@@ -5,9 +11,10 @@ export default function MilitaryStatusBar() {
   const [status, setStatus] = useState('OPERATIONAL')
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(new Date())
-      const hour = new Date().getHours()
+    const updateStatus = () => {
+      const now = new Date()
+      setTime(now)
+      const hour = now.getHours()
       if (hour >= 8 && hour < 17) {
         setStatus('ACTIVE DUTY HOURS')
       } else if (hour >= 17 && hour < 22) {
@@ -15,12 +22,15 @@ export default function MilitaryStatusBar() {
       } else {
         setStatus('STAND-BY MODE')
       }
-    }, 1000)
+    }
+
+    updateStatus()
+    const timer = setInterval(updateStatus, 1000)
     return () => clearInterval(timer)
   }, [])
 
-  const formatTime = (date) => {
-    return date.toLocaleTimeString('en-US', {
+  const formatTime = () => {
+    return time.toLocaleTimeString('en-US', {
       hour12: false,
       hour: '2-digit',
       minute: '2-digit',
@@ -28,8 +38,8 @@ export default function MilitaryStatusBar() {
     })
   }
 
-  const formatDate = (date) => {
-    return date.toLocaleDateString('en-US', {
+  const formatDate = () => {
+    return time.toLocaleDateString('en-US', {
       weekday: 'short',
       year: 'numeric',
       month: 'short',
@@ -46,6 +56,10 @@ export default function MilitaryStatusBar() {
 
   return (
     <div style={{
+      position: 'fixed',
+      top: 'var(--nav-h, 56px)',
+      left: 0,
+      right: 0,
       background: 'linear-gradient(90deg, rgba(200,149,42,0.08) 0%, rgba(200,149,42,0.03) 50%, rgba(200,149,42,0.08) 100%)',
       borderBottom: '1px solid rgba(200,149,42,0.15)',
       padding: '6px 0',
@@ -54,15 +68,16 @@ export default function MilitaryStatusBar() {
       letterSpacing: '2px',
       textTransform: 'uppercase',
       overflow: 'hidden',
+      zIndex: 998,
     }}>
       <style>{`
         @keyframes statusPulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.5; }
         }
-        @keyframes scanLine {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
+        @keyframes scrollTicker {
+          0% { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
         }
       `}</style>
 
@@ -146,8 +161,13 @@ export default function MilitaryStatusBar() {
             gap: '8px',
             color: 'var(--text-dim)',
           }}>
-            <span style={{ fontSize: '16px', fontFamily: "'Bebas Neue', sans-serif", color: 'var(--gold)', letterSpacing: '1px' }}>
-              {formatTime(time)}
+            <span style={{ 
+              fontSize: '16px', 
+              fontFamily: "'Bebas Neue', sans-serif", 
+              color: 'var(--gold)', 
+              letterSpacing: '1px' 
+            }}>
+              {formatTime()}
             </span>
             <span style={{
               fontSize: '9px',
@@ -171,17 +191,10 @@ export default function MilitaryStatusBar() {
             fontWeight: 600,
             letterSpacing: '1px',
           }}>
-            {formatDate(time)}
+            {formatDate()}
           </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes scrollTicker {
-          0% { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
-        }
-      `}</style>
     </div>
   )
 }

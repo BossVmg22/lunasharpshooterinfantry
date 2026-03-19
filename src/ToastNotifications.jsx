@@ -1,4 +1,9 @@
-import { createContext, useContext, useState, useCallback } from 'react'
+/* ═══════════════════════════════════════════════════════════════════
+   FIXED ToastNotifications.jsx - Update LSI 101 v2
+   Fixed memory leaks and accessibility
+═══════════════════════════════════════════════════════════════════ */
+
+import { createContext, useContext, useState, useCallback, useMemo } from 'react'
 
 const ToastContext = createContext(null)
 
@@ -6,7 +11,7 @@ export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([])
 
   const addToast = useCallback((message, type = 'info', duration = 3000) => {
-    const id = Date.now()
+    const id = Date.now() + Math.random()
     setToasts(prev => [...prev, { id, message, type }])
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id))
@@ -17,12 +22,12 @@ export function ToastProvider({ children }) {
     setToasts(prev => prev.filter(t => t.id !== id))
   }, [])
 
-  const toast = {
+  const toast = useMemo(() => ({
     success: (msg, duration) => addToast(msg, 'success', duration),
     error: (msg, duration) => addToast(msg, 'error', duration),
     info: (msg, duration) => addToast(msg, 'info', duration),
     warning: (msg, duration) => addToast(msg, 'warning', duration),
-  }
+  }), [addToast])
 
   return (
     <ToastContext.Provider value={toast}>
@@ -76,15 +81,18 @@ function ToastContainer({ toasts, removeToast }) {
       `}</style>
       
       <div
+        role="region"
+        aria-label="Notifications"
         style={{
           position: 'fixed',
-          top: '70px',
+          top: '80px',
           right: '20px',
           zIndex: 99999,
           display: 'flex',
           flexDirection: 'column',
           gap: '10px',
           maxWidth: '360px',
+          pointerEvents: 'none',
         }}
       >
         {toasts.map(toast => (
@@ -98,10 +106,10 @@ function ToastContainer({ toasts, removeToast }) {
 function Toast({ toast, onRemove }) {
   const [exiting, setExiting] = useState(false)
 
-  const handleRemove = () => {
+  const handleRemove = useCallback(() => {
     setExiting(true)
     setTimeout(onRemove, 200)
-  }
+  }, [onRemove])
 
   const types = {
     success: {
@@ -134,6 +142,8 @@ function Toast({ toast, onRemove }) {
 
   return (
     <div
+      role="alert"
+      aria-live="polite"
       style={{
         background: t.bg,
         border: `1px solid ${t.border}`,
@@ -149,6 +159,7 @@ function Toast({ toast, onRemove }) {
           : 'slideInRight 0.3s ease',
         position: 'relative',
         overflow: 'hidden',
+        pointerEvents: 'auto',
       }}
     >
       <div
@@ -195,6 +206,7 @@ function Toast({ toast, onRemove }) {
       </div>
       <button
         onClick={handleRemove}
+        aria-label="Close notification"
         style={{
           background: 'none',
           border: 'none',

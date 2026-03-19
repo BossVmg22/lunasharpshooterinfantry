@@ -1,26 +1,34 @@
-import { useState, useEffect } from 'react'
+/* ═══════════════════════════════════════════════════════════════════
+   FIXED ScrollProgress.jsx - Update LSI 101 v2
+   Now includes BackToTop functionality (removed duplicate)
+   Fixed z-index conflicts with navbar
+═══════════════════════════════════════════════════════════════════ */
+
+import { useState, useEffect, useCallback } from 'react'
 
 export default function ScrollProgress() {
   const [progress, setProgress] = useState(0)
-  const [showIndicator, setShowIndicator] = useState(true)
+  const [showIndicator, setShowIndicator] = useState(false)
+
+  const handleScroll = useCallback(() => {
+    const scrollTop = window.scrollY
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight
+    const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0
+    setProgress(Math.min(100, scrollPercent))
+    setShowIndicator(scrollTop > 300)
+  }, [])
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight
-      const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0
-      setProgress(Math.min(100, scrollPercent))
-      
-      if (scrollTop > 400) {
-        setShowIndicator(false)
-      } else {
-        setShowIndicator(true)
-      }
-    }
-
     window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
+  }, [handleScroll])
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
+
+  const circumference = 2 * Math.PI * 18
 
   return (
     <>
@@ -31,33 +39,34 @@ export default function ScrollProgress() {
         }
       `}</style>
       
-      {/* Top progress bar */}
+      {/* Top progress bar - positioned below navbar */}
       <div style={{
         position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
-        height: '3px',
+        height: '2px',
         background: 'rgba(200,149,42,0.1)',
-        zIndex: 9999,
+        zIndex: 999,
+        pointerEvents: 'none',
       }}>
         <div style={{
           height: '100%',
           width: `${progress}%`,
           background: 'linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-pale))',
           transition: 'width 0.1s ease-out',
-          boxShadow: '0 0 10px rgba(200, 149, 42, 0.5)',
+          boxShadow: '0 0 8px rgba(200, 149, 42, 0.6)',
         }} />
       </div>
 
-      {/* Side indicator (shows when scrolled) */}
-      {!showIndicator && (
+      {/* Side indicator - only shows when scrolled */}
+      {showIndicator && (
         <div style={{
           position: 'fixed',
           right: '20px',
           top: '50%',
           transform: 'translateY(-50%)',
-          zIndex: 9998,
+          zIndex: 998,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -105,7 +114,6 @@ export default function ScrollProgress() {
             }} />
           </div>
           
-          {/* Scroll indicator text */}
           <span style={{
             fontFamily: "'Rajdhani', sans-serif",
             fontSize: '8px',
@@ -120,40 +128,85 @@ export default function ScrollProgress() {
         </div>
       )}
 
-      {/* Jump to top button */}
-      {!showIndicator && (
+      {/* Jump to top button - with circular progress indicator */}
+      {showIndicator && (
         <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={scrollToTop}
+          aria-label="Back to top"
           style={{
             position: 'fixed',
+            bottom: '24px',
             right: '20px',
-            bottom: '30px',
             width: '44px',
             height: '44px',
             border: '1px solid var(--gold-dim)',
             borderRadius: '4px',
-            background: 'rgba(9,13,9,0.9)',
+            background: 'rgba(9,13,9,0.92)',
             backdropFilter: 'blur(10px)',
             color: 'var(--gold)',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '16px',
-            zIndex: 9997,
+            zIndex: 998,
             transition: 'all 0.2s ease',
-            opacity: 0.8,
+            opacity: 0.9,
           }}
           onMouseEnter={e => {
-            e.target.style.background = 'rgba(200,149,42,0.15)'
-            e.target.style.opacity = 1
+            e.currentTarget.style.background = 'rgba(200,149,42,0.15)'
+            e.currentTarget.style.opacity = 1
+            e.currentTarget.style.transform = 'translateY(-2px)'
           }}
           onMouseLeave={e => {
-            e.target.style.background = 'rgba(9,13,9,0.9)'
-            e.target.style.opacity = 0.8
+            e.currentTarget.style.background = 'rgba(9,13,9,0.92)'
+            e.currentTarget.style.opacity = 0.9
+            e.currentTarget.style.transform = 'translateY(0)'
           }}
         >
-          ↑
+          {/* Circular SVG progress ring */}
+          <svg 
+            width="44" 
+            height="44" 
+            style={{ position: 'absolute', top: 0, left: 0, transform: 'rotate(-90deg)' }}
+          >
+            <circle 
+              cx="22" 
+              cy="22" 
+              r={18} 
+              fill="none" 
+              stroke="var(--border)" 
+              strokeWidth="1.5" 
+            />
+            <circle
+              cx="22"
+              cy="22"
+              r={18}
+              fill="none"
+              stroke="var(--gold)"
+              strokeWidth="1.5"
+              strokeDasharray={circumference}
+              strokeDashoffset={circumference - (circumference * progress) / 100}
+              strokeLinecap="butt"
+              style={{ transition: 'stroke-dashoffset 0.1s linear' }}
+            />
+          </svg>
+          
+          {/* Arrow icon */}
+          <svg 
+            width="12" 
+            height="12" 
+            viewBox="0 0 12 12" 
+            fill="none" 
+            style={{ position: 'relative', zIndex: 1 }}
+          >
+            <path 
+              d="M6 10V2M2 6l4-4 4 4" 
+              stroke="var(--gold)" 
+              strokeWidth="1.5" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            />
+          </svg>
         </button>
       )}
     </>

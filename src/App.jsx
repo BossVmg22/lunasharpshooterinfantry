@@ -1,7 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════
-   UPDATE LSI 101 - App.jsx
-   Replace src/App.jsx with this file
-   Add ErrorBoundary and ToastProvider
+   FIXED App.jsx - Update LSI 101 v2
+   Removed duplicate BackToTop (ScrollProgress now handles it)
 ═══════════════════════════════════════════════════════════════════ */
 
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom'
@@ -14,7 +13,6 @@ import ScrollProgress from './ScrollProgress'
 import MilitaryStatusBar from './MilitaryStatusBar'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
-import BackToTop from './components/BackToTop'
 import CommandPalette from './components/CommandPalette'
 import Breadcrumb from './components/Breadcrumb'
 
@@ -74,14 +72,11 @@ export default function App() {
         <AuthProvider>
           <LightboxProvider>
             <BrowserRouter>
-              {/* Global enhancements */}
               <TacticalCursor />
               <ScrollProgress />
-              
               <Navbar />
               <MilitaryStatusBar />
               <Breadcrumb />
-              <BackToTop />
               <CommandPalette />
               
               <Routes>

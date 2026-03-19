@@ -1,34 +1,47 @@
-import { useEffect, useState, useRef } from 'react'
+/* ═══════════════════════════════════════════════════════════════════
+   FIXED TacticalCursor.jsx - Update LSI 101 v2
+   Fixed SSR issue with proper useState initialization
+   Fixed memory leak with trail cleanup
+═══════════════════════════════════════════════════════════════════ */
+
+import { useEffect, useState, useRef, useCallback } from 'react'
 
 export default function TacticalCursor() {
   const [pos, setPos] = useState({ x: -100, y: -100 })
   const [visible, setVisible] = useState(false)
   const [clicking, setClicking] = useState(false)
+  const [isTouchDevice, setIsTouchDevice] = useState(true)
   const trailRef = useRef([])
   const frameRef = useRef(null)
 
   useEffect(() => {
-    const handleMouseMove = e => {
-      setPos({ x: e.clientX, y: e.clientY })
-      setVisible(true)
-      trailRef.current = [
-        { x: e.clientX, y: e.clientY, age: 0 },
-        ...trailRef.current.slice(0, 8),
-      ].map(p => ({ ...p, age: (p.age || 0) + 1 }))
-    }
+    setIsTouchDevice(window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(hover: none)').matches)
+  }, [])
 
-    const handleMouseDown = () => setClicking(true)
-    const handleMouseUp = () => setClicking(false)
-    const handleMouseLeave = () => setVisible(false)
+  const handleMouseMove = useCallback((e) => {
+    setPos({ x: e.clientX, y: e.clientY })
+    setVisible(true)
+    trailRef.current = [
+      { x: e.clientX, y: e.clientY, age: 0 },
+      ...trailRef.current.slice(0, 8),
+    ].map(p => ({ ...p, age: (p.age || 0) + 1 }))
+  }, [])
 
-    const draw = () => {
-      frameRef.current = requestAnimationFrame(draw)
-    }
+  const handleMouseDown = useCallback(() => setClicking(true), [])
+  const handleMouseUp = useCallback(() => setClicking(false), [])
+  const handleMouseLeave = useCallback(() => setVisible(false), [])
+
+  useEffect(() => {
+    if (isTouchDevice) return
 
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mousedown', handleMouseDown)
     window.addEventListener('mouseup', handleMouseUp)
     document.documentElement.addEventListener('mouseleave', handleMouseLeave)
+
+    const draw = () => {
+      frameRef.current = requestAnimationFrame(draw)
+    }
     frameRef.current = requestAnimationFrame(draw)
 
     return () => {
@@ -36,11 +49,14 @@ export default function TacticalCursor() {
       window.removeEventListener('mousedown', handleMouseDown)
       window.removeEventListener('mouseup', handleMouseUp)
       document.documentElement.removeEventListener('mouseleave', handleMouseLeave)
-      cancelAnimationFrame(frameRef.current)
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current)
+      }
+      trailRef.current = []
     }
-  }, [])
+  }, [isTouchDevice, handleMouseMove, handleMouseDown, handleMouseUp, handleMouseLeave])
 
-  if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+  if (isTouchDevice) {
     return null
   }
 
@@ -51,7 +67,6 @@ export default function TacticalCursor() {
           position: fixed;
           pointer-events: none;
           z-index: 99999;
-          mix-blend-mode: difference;
         }
         .tactical-crosshair {
           position: fixed;
@@ -62,11 +77,9 @@ export default function TacticalCursor() {
           position: fixed;
           pointer-events: none;
           z-index: 99997;
-          width: 4px;
-          height: 4px;
           background: var(--gold);
           border-radius: 50%;
-          opacity: 0;
+          pointer-events: none;
         }
       `}</style>
 
@@ -77,7 +90,7 @@ export default function TacticalCursor() {
           left: pos.x,
           top: pos.y,
           transform: `translate(-50%, -50%) scale(${clicking ? 0.5 : 1})`,
-          transition: 'transform 0.1s ease',
+          transition: clicking ? 'none' : 'transform 0.1s ease',
           opacity: visible ? 1 : 0,
         }}
       >
@@ -110,7 +123,7 @@ export default function TacticalCursor() {
         </svg>
       </div>
 
-      {/* Trail */}
+      {/* Trail dots */}
       {trailRef.current.slice(0, 5).map((p, i) => (
         <div
           key={i}

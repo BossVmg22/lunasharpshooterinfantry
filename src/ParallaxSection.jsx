@@ -1,4 +1,9 @@
-import { useRef, useState, useEffect } from 'react'
+/* ═══════════════════════════════════════════════════════════════════
+   FIXED ParallaxSection.jsx - Update LSI 101 v2
+   Added proper cleanup and performance optimization
+═══════════════════════════════════════════════════════════════════ */
+
+import { useRef, useState, useEffect, useCallback } from 'react'
 
 export default function ParallaxSection({
   children,
@@ -10,22 +15,36 @@ export default function ParallaxSection({
 }) {
   const ref = useRef(null)
   const [offset, setOffset] = useState(0)
+  const timeoutRef = useRef(null)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!ref.current) return
+  const handleScroll = useCallback(() => {
+    if (!ref.current) return
+    
+    if (timeoutRef.current) {
+      cancelAnimationFrame(timeoutRef.current)
+    }
+    
+    timeoutRef.current = requestAnimationFrame(() => {
       const rect = ref.current.getBoundingClientRect()
       const windowHeight = window.innerHeight
       const elementCenter = rect.top + rect.height / 2
       const viewportCenter = windowHeight / 2
       const distance = elementCenter - viewportCenter
       setOffset(distance * speed)
-    }
+    })
+  }, [speed])
 
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [speed])
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (timeoutRef.current) {
+        cancelAnimationFrame(timeoutRef.current)
+      }
+    }
+  }, [handleScroll])
 
   const transform =
     direction === 'vertical'
@@ -74,19 +93,33 @@ export function ParallaxImage({
 }) {
   const ref = useRef(null)
   const [translateY, setTranslateY] = useState(0)
+  const timeoutRef = useRef(null)
 
   useEffect(() => {
     const handleScroll = () => {
       if (!ref.current) return
-      const rect = ref.current.getBoundingClientRect()
-      const windowHeight = window.innerHeight
-      const distanceFromCenter = rect.top + rect.height / 2 - windowHeight / 2
-      setTranslateY(distanceFromCenter * speed)
+      
+      if (timeoutRef.current) {
+        cancelAnimationFrame(timeoutRef.current)
+      }
+      
+      timeoutRef.current = requestAnimationFrame(() => {
+        const rect = ref.current.getBoundingClientRect()
+        const windowHeight = window.innerHeight
+        const distanceFromCenter = rect.top + rect.height / 2 - windowHeight / 2
+        setTranslateY(distanceFromCenter * speed)
+      })
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
-    return () => window.removeEventListener('scroll', handleScroll)
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (timeoutRef.current) {
+        cancelAnimationFrame(timeoutRef.current)
+      }
+    }
   }, [speed])
 
   return (
@@ -145,7 +178,7 @@ export function HoverParallax({ children, scale = 1.05 }) {
   const ref = useRef(null)
   const [transform, setTransform] = useState('')
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = useCallback((e) => {
     if (!ref.current) return
     const rect = ref.current.getBoundingClientRect()
     const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2)
@@ -153,11 +186,11 @@ export function HoverParallax({ children, scale = 1.05 }) {
     setTransform(
       `perspective(1000px) rotateX(${y * -3}deg) rotateY(${x * 3}deg) scale(${scale})`
     )
-  }
+  }, [scale])
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     setTransform('perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)')
-  }
+  }, [])
 
   return (
     <div

@@ -1,9 +1,15 @@
+/* ═══════════════════════════════════════════════════════════════════
+   FIXED AnimatedEmblem.jsx - Update LSI 101 v2
+   Optimized animation performance
+═══════════════════════════════════════════════════════════════════ */
+
 import { useEffect, useRef, useState } from 'react'
 
 export default function AnimatedEmblem({ size = 80, animated = true, style }) {
   const [phase, setPhase] = useState(0)
   const frameRef = useRef(null)
   const startTimeRef = useRef(null)
+  const animationRef = useRef(null)
 
   useEffect(() => {
     if (!animated) return
@@ -11,12 +17,18 @@ export default function AnimatedEmblem({ size = 80, animated = true, style }) {
     const animate = (timestamp) => {
       if (!startTimeRef.current) startTimeRef.current = timestamp
       const elapsed = timestamp - startTimeRef.current
-      setPhase((elapsed / 3000) % 1)
+      const newPhase = (elapsed / 3000) % 1
+      setPhase(newPhase)
       frameRef.current = requestAnimationFrame(animate)
     }
 
     frameRef.current = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(frameRef.current)
+
+    return () => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current)
+      }
+    }
   }, [animated])
 
   const glowIntensity = animated ? 0.3 + Math.sin(phase * Math.PI * 2) * 0.2 : 0.3

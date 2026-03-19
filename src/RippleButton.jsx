@@ -1,10 +1,24 @@
-import { useState, useRef } from 'react'
+/* ═══════════════════════════════════════════════════════════════════
+   FIXED RippleButton.jsx - Update LSI 101 v2
+   Fixed ripple cleanup and accessibility
+═══════════════════════════════════════════════════════════════════ */
 
-export default function RippleButton({ children, variant = 'primary', onClick, disabled, style, className, ...props }) {
+import { useState, useRef, useCallback } from 'react'
+
+export default function RippleButton({ 
+  children, 
+  variant = 'primary', 
+  onClick, 
+  disabled = false, 
+  style, 
+  className, 
+  ...props 
+}) {
   const [ripples, setRipples] = useState([])
   const buttonRef = useRef(null)
+  const rippleIdRef = useRef(0)
 
-  const handleClick = (e) => {
+  const handleClick = useCallback((e) => {
     if (disabled) return
 
     const button = buttonRef.current
@@ -13,22 +27,19 @@ export default function RippleButton({ children, variant = 'primary', onClick, d
     const rect = button.getBoundingClientRect()
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
+    const size = Math.max(rect.width, rect.height)
 
-    const newRipple = {
-      id: Date.now(),
-      x,
-      y,
-      size: Math.max(rect.width, rect.height),
-    }
+    const id = rippleIdRef.current++
+    const newRipple = { id, x, y, size }
 
     setRipples(prev => [...prev, newRipple])
 
     setTimeout(() => {
-      setRipples(prev => prev.filter(r => r.id !== newRipple.id))
+      setRipples(prev => prev.filter(r => r.id !== id))
     }, 600)
 
     if (onClick) onClick(e)
-  }
+  }, [disabled, onClick])
 
   const variants = {
     primary: {
@@ -81,41 +92,41 @@ export default function RippleButton({ children, variant = 'primary', onClick, d
       onMouseEnter={e => {
         if (!disabled) {
           if (variant === 'primary') {
-            e.target.style.background = 'var(--gold-pale)'
-            e.target.style.transform = 'translateY(-1px)'
-            e.target.style.boxShadow = '0 4px 16px rgba(200,149,42,0.3)'
+            e.currentTarget.style.background = 'var(--gold-pale)'
+            e.currentTarget.style.transform = 'translateY(-1px)'
+            e.currentTarget.style.boxShadow = '0 4px 16px rgba(200,149,42,0.3)'
           } else if (variant === 'ghostGold') {
-            e.target.style.background = 'rgba(200,149,42,0.1)'
-            e.target.style.borderColor = 'var(--gold)'
+            e.currentTarget.style.background = 'rgba(200,149,42,0.1)'
+            e.currentTarget.style.borderColor = 'var(--gold)'
           } else if (variant === 'ghost') {
-            e.target.style.borderColor = 'var(--gold-dim)'
-            e.target.style.color = 'var(--gold)'
+            e.currentTarget.style.borderColor = 'var(--gold-dim)'
+            e.currentTarget.style.color = 'var(--gold)'
           }
         }
       }}
       onMouseLeave={e => {
         if (!disabled) {
           if (variant === 'primary') {
-            e.target.style.background = 'var(--gold)'
-            e.target.style.transform = 'translateY(0)'
-            e.target.style.boxShadow = 'none'
+            e.currentTarget.style.background = 'var(--gold)'
+            e.currentTarget.style.transform = 'translateY(0)'
+            e.currentTarget.style.boxShadow = 'none'
           } else if (variant === 'ghostGold') {
-            e.target.style.background = 'rgba(200,149,42,0.04)'
-            e.target.style.borderColor = 'var(--gold-dim)'
+            e.currentTarget.style.background = 'rgba(200,149,42,0.04)'
+            e.currentTarget.style.borderColor = 'var(--gold-dim)'
           } else if (variant === 'ghost') {
-            e.target.style.borderColor = 'var(--border2)'
-            e.target.style.color = 'var(--text)'
+            e.currentTarget.style.borderColor = 'var(--border2)'
+            e.currentTarget.style.color = 'var(--text)'
           }
         }
       }}
       onMouseDown={e => {
         if (!disabled) {
-          e.target.style.transform = 'scale(0.98)'
+          e.currentTarget.style.transform = 'scale(0.98)'
         }
       }}
       onMouseUp={e => {
         if (!disabled) {
-          e.target.style.transform = 'translateY(0)'
+          e.currentTarget.style.transform = 'translateY(0)'
         }
       }}
       {...props}
