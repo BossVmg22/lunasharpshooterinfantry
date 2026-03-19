@@ -463,6 +463,24 @@ textarea, input { font-family: inherit; }
   .hero-content { padding: 0 20px !important; }
 }
 
+/* Hero eyebrow text wrapping */
+.eyebrow-text {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+/* Hero eyebrow responsive */
+@media (max-width: 480px) {
+  .eyebrow {
+    font-size: 9px !important;
+    letter-spacing: 3px !important;
+  }
+  .eyebrow + p {
+    font-size: 14px !important;
+  }
+}
+
 /* ── Navbar hamburger hidden by default ──────── */
 .nav-hamburger { display: none; }
 

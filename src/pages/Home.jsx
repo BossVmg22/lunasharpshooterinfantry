@@ -139,9 +139,9 @@ export default function Home() {
         </div>
 
         <div className="hero-content" style={{ position: 'relative', zIndex: 1, padding: '0 48px', maxWidth: 860 }} className="hero-content">
-          <div style={eyebrow}>
-            <span style={{ width: 24, height: 1, background: 'var(--gold)', display: 'inline-block' }} />
-            <EditableText value={content.hero_eyebrow ?? 'Official Division Portal'} onSave={v => save('hero_eyebrow', v)} saving={saving === 'hero_eyebrow'} tag="span" multiline={false} />
+          <div style={eyebrow} className="eyebrow">
+            <span style={{ width: 24, height: 1, background: 'var(--gold)', display: 'inline-block', flexShrink: 0 }} />
+            <EditableText value={content.hero_eyebrow ?? 'Official Division Portal'} onSave={v => save('hero_eyebrow', v)} saving={saving === 'hero_eyebrow'} tag="span" multiline={false} className="eyebrow-text" />
           </div>
           <EditableText value={content.hero_sub ?? 'Luna Sharpshooter Infantry'} onSave={v => save('hero_sub', v)} saving={saving === 'hero_sub'} tag="p" multiline={false}
             style={{ fontFamily: 'Source Serif 4,serif', fontSize: 18, fontWeight: 300, color: 'var(--text-dim)', letterSpacing: 1, marginBottom: 4 }} />
@@ -404,9 +404,10 @@ const heroVignette = {
   background: 'radial-gradient(ellipse 100% 100% at 50% 50%, transparent 40%, rgba(0,0,0,0.45) 100%)',
 }
 const eyebrow = {
-  display: 'inline-flex', alignItems: 'center', gap: 10,
+  display: 'flex', alignItems: 'center', gap: 10,
   fontSize: 10, fontWeight: 700, letterSpacing: 5,
   color: 'var(--gold)', textTransform: 'uppercase', marginBottom: 18,
+  flexWrap: 'wrap',
 }
 function cornerStyle(pos) {
   const map = { tl:{top:80,left:48,borderWidth:'2px 0 0 2px'}, tr:{top:80,right:48,borderWidth:'2px 2px 0 0'}, bl:{bottom:40,left:48,borderWidth:'0 0 2px 2px'}, br:{bottom:40,right:48,borderWidth:'0 2px 2px 0'} }
